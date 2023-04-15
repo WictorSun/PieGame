@@ -8,6 +8,7 @@ public class CircleSync : MonoBehaviour
     public static int PosID = Shader.PropertyToID("_PlayerPosition");
     public static int SizeID = Shader.PropertyToID("_Size");
     public Material wallMaterial;
+    public Material[] allseethroughmaterials;
     public Camera cameras;
     public LayerMask Obsticlemask;
 
@@ -25,6 +26,7 @@ public class CircleSync : MonoBehaviour
         }
         else
         {
+            
             wallMaterial.SetFloat(SizeID, 0f);
         }
         var view = cameras.WorldToViewportPoint(transform.position);
