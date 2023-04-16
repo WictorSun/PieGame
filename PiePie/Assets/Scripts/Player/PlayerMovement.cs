@@ -1,28 +1,40 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.LightAnchor;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Reference Other Scripts")]
     PlayerMovementBigActionMap PMBA;
     [SerializeField] private GameManager GM;
+    [SerializeField] private TurnBikeWheels TB;
+
+    [Header("Transforms")]
+    [SerializeField] private GameObject playerprefab;
 
     [Header("Components")]
-    [SerializeField] Rigidbody PlayerRb;
+    [SerializeField] public Rigidbody PlayerRb;
+    //[SerializeField] Rigidbody BikeRb;
     [SerializeField] Animator playerAnim;
     private PlayerInput playerinput;
+    [SerializeField] private CapsuleCollider playercollider;
 
     [Header("Animation")]
     int moveAnimationID;
     int moveWithBagId;
+    [SerializeField] private Transform LefthandBike, rightHandBike, leftFootBike, rightFootBike;
+    [SerializeField] private Transform Lefthand, rightHand, leftFoot, rightFoot;
 
     [Header("Bools")]
     [SerializeField] private bool run;
     [SerializeField] private bool jump;
     [SerializeField] private bool jumpOnBike;
+    [SerializeField] public bool breakOnBike;
     [SerializeField] private bool jetPackRise;
     [SerializeField] private bool climbRightHand;
     [SerializeField] private bool climbLeftHand;
@@ -37,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float OnGroundRun;
     [SerializeField] private float rotationSpeed;
 
+
     [Header("Jumping")]
     public float jumpForce = 10f;
     public float maxJumpTime = 1f;
@@ -46,21 +59,43 @@ public class PlayerMovement : MonoBehaviour
     public int jumpCount = 0;
     public bool isJumpingPressed;
 
+    [Header("Bike")]
+    [SerializeField] private float normalBikeSpeed;
+    [SerializeField] private GameObject bike;
+    [SerializeField] private GameObject fork;
+    private float rotationValue = 0f;
+    [SerializeField] private float forkRotationSpeed;
+    [SerializeField] private float rotationSpeedBike;
+    [SerializeField] private float minRotateValueSpeedBike;
+    [SerializeField] private float maxRotateValueSpeedBike;
+    [SerializeField] private Transform seat;
+    [SerializeField] private float bikespeed;
+   
+    [SerializeField] private float minWheelTurn;
+    [SerializeField] private float maxWheelTurn;
+
+    [SerializeField] private float SpeedRotationJoystickBike;
+    [SerializeField] private float minValueSpeedBike;
+    [SerializeField] private float maxValueSpeedBike;
+    private Vector2 previousJoystickValue;
 
     [Header("Transforms")]
     [SerializeField] private Transform orientation;
+    [SerializeField] private Transform bikeOrientation;
     [SerializeField] private Transform cameraPlayer;
     [SerializeField] private Transform groundCheck;
 
     [Header("Vector2")]
     private Vector2 InputVectorOnGround;
-    private Vector2 InputVectorOnBike;
+    public Vector2 InputVectorOnBike;
     private Vector2 InputVectorOnBikeSpeed;
     private Vector2 InputVectorOnJetPack;
     private Vector2 InputVectorOnClimb;
 
     [Header("Vector3")]
     private Vector3 movement;
+    private Vector3 movementBike;
+    private Vector3 upDirection = Vector3.up;
 
     [Header("Layers")]
     [SerializeField] private LayerMask groundLayer;
@@ -97,12 +132,14 @@ public class PlayerMovement : MonoBehaviour
         PMBA.RegMove.Run.canceled += RunOnGround;
 
         // Bike ActionMap
-        PMBA.BikeMove.MoveBike.started += MoveOnBike;
+        PMBA.BikeMove.MoveBike.performed += MoveOnBike;
         PMBA.BikeMove.MoveBike.canceled += MoveOnBike;
         PMBA.BikeMove.JumpBike.performed += JumpOnBike;
         PMBA.BikeMove.JumpBike.canceled += JumpOnBike;
-        PMBA.BikeMove.SpeedBike.started += SpeedOnBike;
+        PMBA.BikeMove.SpeedBike.performed += SpeedOnBike;
         PMBA.BikeMove.SpeedBike.canceled += SpeedOnBike;
+        PMBA.BikeMove.Break.started += BreakOnBike;
+        PMBA.BikeMove.Break.canceled += BreakOnBike;
 
         // JetPack ActionMap
         PMBA.JetpackMove.Jetpackmove.started += MoveOnJetPack;
@@ -141,12 +178,15 @@ public class PlayerMovement : MonoBehaviour
         PMBA.RegMove.Run.canceled -= RunOnGround;
 
         // Bike ActionMap
-        PMBA.BikeMove.MoveBike.started -= MoveOnBike;
+        PMBA.BikeMove.MoveBike.performed -= MoveOnBike;
         PMBA.BikeMove.MoveBike.canceled -= MoveOnBike;
         PMBA.BikeMove.JumpBike.performed -= JumpOnBike;
         PMBA.BikeMove.JumpBike.canceled -= JumpOnBike;
-        PMBA.BikeMove.SpeedBike.started -= SpeedOnBike;
+        PMBA.BikeMove.SpeedBike.performed -= SpeedOnBike;
         PMBA.BikeMove.SpeedBike.canceled -= SpeedOnBike;
+        PMBA.BikeMove.Break.started -= BreakOnBike;
+        PMBA.BikeMove.Break.canceled -= BreakOnBike;
+
 
         // JetPack ActionMap
         PMBA.JetpackMove.Jetpackmove.started -= MoveOnJetPack;
@@ -166,6 +206,8 @@ public class PlayerMovement : MonoBehaviour
         PMBA.Climbmove.LeftFoot.performed -= LeftFoot;
         PMBA.Climbmove.LeftFoot.canceled -= LeftFoot;
     }
+
+ 
 
 
 
@@ -195,7 +237,7 @@ public class PlayerMovement : MonoBehaviour
     private void MoveOnBike(InputAction.CallbackContext ctx)
     {
 
-        //InputVectorOnBike = ctx.ReadValue<Vector2>();
+        InputVectorOnBike = ctx.ReadValue<Vector2>();
 
     }
 
@@ -209,10 +251,13 @@ public class PlayerMovement : MonoBehaviour
     private void SpeedOnBike(InputAction.CallbackContext ctx)
     {
 
-        // InputVectorOnBikeSpeed = ctx.ReadValue<Vector2>();
+        InputVectorOnBikeSpeed = ctx.ReadValue<Vector2>();
 
     }
-
+    private void BreakOnBike(InputAction.CallbackContext ctx)
+    {
+        breakOnBike = ctx.ReadValueAsButton();
+    }
     private void MoveOnJetPack(InputAction.CallbackContext ctx)
     {
 
@@ -263,13 +308,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        BasicMovement();
+       
 
         if (GM.hasBag)
         {
             HandleJumping();
         }
-        
+
+        if (GM.onBike)
+        {
+            BikeMovement();
+           
+        }
+        else if (!GM.onBike)
+        {
+            BasicMovement();
+            playerAnim.SetBool("OnBike", false);
+            bike.SetActive(false);
+            playercollider.enabled = true;
+            
+        }
        
         
         if (IsGrounded())
@@ -491,5 +549,73 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    
-}
+   
+    void BikeMovement()
+    {
+        
+        bike.SetActive(true);
+        playerAnim.SetBool("OnBike", true);
+        leftFoot.transform.position = leftFootBike.transform.position;
+        rightFoot.transform.position = rightFootBike.transform.position;
+        Lefthand.transform.position = LefthandBike.transform.position;
+        rightHand.transform.position = rightHandBike.transform.position;
+        bike.transform.SetParent(this.transform);
+        
+        // PlayerMovement
+
+
+
+
+        //BikeMovement
+        if (InputVectorOnBike.magnitude >= .1f)
+        {
+            playercollider.enabled = false;
+            //Bike Moves!!!!!!!!!!!!
+            movementBike = new Vector3(InputVectorOnBike.x, 0f, InputVectorOnBike.y);
+            Vector3 CameraDir = bikeOrientation.transform.forward;
+            movementBike = Vector3.Scale(movementBike, new Vector3(1, 0, 1)).normalized;
+            movementBike = CameraDir * movementBike.z + cameraPlayer.transform.right * movementBike.x;
+            Quaternion targetRotation = transform.rotation;
+            PlayerRb.MovePosition((Vector3)transform.position + movementBike * bikespeed * Time.deltaTime);
+            transform.rotation = targetRotation;
+
+
+            float targetAngle = Mathf.Atan2(movementBike.x, movementBike.z) * Mathf.Rad2Deg;
+            targetRotation = Quaternion.Euler(0, targetAngle , 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeedBike * Time.deltaTime);
+
+            float forkTargetAngle = Mathf.Atan2(movementBike.x, movementBike.z) * Mathf.Rad2Deg;
+            Quaternion forkTargetRotation = Quaternion.Euler(-90, forkTargetAngle - 180, 0);
+            fork.transform.rotation = Quaternion.Slerp(fork.transform.rotation, forkTargetRotation, forkRotationSpeed * Time.deltaTime);
+
+
+
+
+
+
+
+        }
+        Vector2 joystickvalue = InputVectorOnBikeSpeed;
+        // Calculate the rotation angle based on input
+        float rotationAngle = (joystickvalue.x + previousJoystickValue.x) * rotationSpeed * Time.deltaTime;
+        float rotationAngleBike = (joystickvalue.x + previousJoystickValue.x) * rotationSpeed * Time.deltaTime;
+        float rotationAngleTurnWheels = (joystickvalue.x + previousJoystickValue.x) * rotationSpeed * Time.deltaTime;
+
+
+     
+        // Update the current value based on the rotation angle
+        bikespeed += rotationAngle;
+        rotationSpeedBike += rotationAngleBike;
+        TB.RotationSpeed += rotationAngleTurnWheels;
+
+        // Clamp the current value within the specified range
+        bikespeed = Mathf.Clamp(bikespeed, minValueSpeedBike, maxValueSpeedBike);
+        rotationSpeedBike = Mathf.Clamp(rotationSpeedBike, minRotateValueSpeedBike, maxRotateValueSpeedBike);
+        TB.RotationSpeed = Mathf.Clamp(TB.RotationSpeed, minWheelTurn, maxWheelTurn);
+        // Update the previous joystick value for the next frame
+        previousJoystickValue = joystickvalue;
+        
+    }
+
+
+    }

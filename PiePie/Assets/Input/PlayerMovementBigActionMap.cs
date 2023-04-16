@@ -97,12 +97,12 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
             ""actions"": [
                 {
                     ""name"": ""MoveBike"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""37bb8d18-7682-446d-b14e-89168901cb14"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""JumpBike"",
@@ -115,9 +115,18 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                 },
                 {
                     ""name"": ""SpeedBike"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""433522e0-51e8-4cbf-86e9-9f204c3bbf4d"",
                     ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Break"",
+                    ""type"": ""Button"",
+                    ""id"": ""a6ca5ad1-1d6e-4eac-809f-a306d667b4aa"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -154,6 +163,17 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SpeedBike"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8789e4ef-4f64-4666-b119-4f288611dac5"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Break"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -416,6 +436,7 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
         m_BikeMove_MoveBike = m_BikeMove.FindAction("MoveBike", throwIfNotFound: true);
         m_BikeMove_JumpBike = m_BikeMove.FindAction("JumpBike", throwIfNotFound: true);
         m_BikeMove_SpeedBike = m_BikeMove.FindAction("SpeedBike", throwIfNotFound: true);
+        m_BikeMove_Break = m_BikeMove.FindAction("Break", throwIfNotFound: true);
         // JetpackMove
         m_JetpackMove = asset.FindActionMap("JetpackMove", throwIfNotFound: true);
         m_JetpackMove_Jetpackmove = m_JetpackMove.FindAction("Jetpackmove", throwIfNotFound: true);
@@ -544,6 +565,7 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
     private readonly InputAction m_BikeMove_MoveBike;
     private readonly InputAction m_BikeMove_JumpBike;
     private readonly InputAction m_BikeMove_SpeedBike;
+    private readonly InputAction m_BikeMove_Break;
     public struct BikeMoveActions
     {
         private @PlayerMovementBigActionMap m_Wrapper;
@@ -551,6 +573,7 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
         public InputAction @MoveBike => m_Wrapper.m_BikeMove_MoveBike;
         public InputAction @JumpBike => m_Wrapper.m_BikeMove_JumpBike;
         public InputAction @SpeedBike => m_Wrapper.m_BikeMove_SpeedBike;
+        public InputAction @Break => m_Wrapper.m_BikeMove_Break;
         public InputActionMap Get() { return m_Wrapper.m_BikeMove; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -569,6 +592,9 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                 @SpeedBike.started -= m_Wrapper.m_BikeMoveActionsCallbackInterface.OnSpeedBike;
                 @SpeedBike.performed -= m_Wrapper.m_BikeMoveActionsCallbackInterface.OnSpeedBike;
                 @SpeedBike.canceled -= m_Wrapper.m_BikeMoveActionsCallbackInterface.OnSpeedBike;
+                @Break.started -= m_Wrapper.m_BikeMoveActionsCallbackInterface.OnBreak;
+                @Break.performed -= m_Wrapper.m_BikeMoveActionsCallbackInterface.OnBreak;
+                @Break.canceled -= m_Wrapper.m_BikeMoveActionsCallbackInterface.OnBreak;
             }
             m_Wrapper.m_BikeMoveActionsCallbackInterface = instance;
             if (instance != null)
@@ -582,6 +608,9 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                 @SpeedBike.started += instance.OnSpeedBike;
                 @SpeedBike.performed += instance.OnSpeedBike;
                 @SpeedBike.canceled += instance.OnSpeedBike;
+                @Break.started += instance.OnBreak;
+                @Break.performed += instance.OnBreak;
+                @Break.canceled += instance.OnBreak;
             }
         }
     }
@@ -760,6 +789,7 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
         void OnMoveBike(InputAction.CallbackContext context);
         void OnJumpBike(InputAction.CallbackContext context);
         void OnSpeedBike(InputAction.CallbackContext context);
+        void OnBreak(InputAction.CallbackContext context);
     }
     public interface IJetpackMoveActions
     {
