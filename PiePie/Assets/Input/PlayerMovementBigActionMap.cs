@@ -233,12 +233,12 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
             ""actions"": [
                 {
                     ""name"": ""MoveHandsAndArms"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""8d4382e7-0b64-4c5d-84a4-78cf4d298ea6"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""RightHand"",

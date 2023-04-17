@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
+using UnityEngine.Windows;
 using static UnityEngine.LightAnchor;
 
 public class PlayerMovement : MonoBehaviour
@@ -14,8 +17,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameManager GM;
     [SerializeField] private TurnBikeWheels TB;
 
-    [Header("Transforms")]
+    [Header("GameObjects")]
     [SerializeField] private GameObject playerprefab;
+    [SerializeField] private GameObject ClimbingPrefab;
 
     [Header("Components")]
     [SerializeField] public Rigidbody PlayerRb;
@@ -27,8 +31,17 @@ public class PlayerMovement : MonoBehaviour
     [Header("Animation")]
     int moveAnimationID;
     int moveWithBagId;
+
+    [Header("Transforms")]
+
+    [Header("Trackers Bike")]
     [SerializeField] private Transform LefthandBike, rightHandBike, leftFootBike, rightFootBike;
+
+    [Header("trackers Hands and Feet")]
     [SerializeField] private Transform Lefthand, rightHand, leftFoot, rightFoot;
+
+    [Header("Trackers Climbing")]
+    [SerializeField] private Transform LefthandClimb, rightHandClimb, leftFootClimb, rightFootClimb;
 
     [Header("Bools")]
     [SerializeField] private bool run;
@@ -41,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool climbRightFoot;
     [SerializeField] private bool climbLeftFoot;
     [SerializeField] private bool onground;
+    [SerializeField] private bool climbing;
 
 
     [Header("Floats")]
@@ -70,14 +84,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float maxRotateValueSpeedBike;
     [SerializeField] private Transform seat;
     [SerializeField] private float bikespeed;
-   
     [SerializeField] private float minWheelTurn;
     [SerializeField] private float maxWheelTurn;
-
     [SerializeField] private float SpeedRotationJoystickBike;
     [SerializeField] private float minValueSpeedBike;
     [SerializeField] private float maxValueSpeedBike;
     private Vector2 previousJoystickValue;
+
+    [Header("Climbing")]
+    [SerializeField] public bool readyToClimb;
+    [SerializeField] private float climbspeed;
+    [SerializeField] private float wallDistanceOffset;
+    [SerializeField] private float sideRaycastOffset;
 
     [Header("Transforms")]
     [SerializeField] private Transform orientation;
@@ -99,6 +117,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Layers")]
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask ClimbLayer;
 
     [Header("Slope Handling")]
     [SerializeField] private float maxSlopeAngle;
@@ -148,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
         PMBA.JetpackMove.JetPackRise.canceled += RiseOnJetPack;
 
         // CLimb ActionMap
-        PMBA.Climbmove.MoveHandsAndArms.started += MoveOnClimb;
+        PMBA.Climbmove.MoveHandsAndArms.performed += MoveOnClimb;
         PMBA.Climbmove.MoveHandsAndArms.canceled += MoveOnClimb;
         PMBA.Climbmove.RightHand.performed += RightHand;
         PMBA.Climbmove.RightHand.canceled += RightHand;
@@ -195,7 +214,7 @@ public class PlayerMovement : MonoBehaviour
         PMBA.JetpackMove.JetPackRise.canceled -= RiseOnJetPack;
 
         // CLimb ActionMap
-        PMBA.Climbmove.MoveHandsAndArms.started -= MoveOnClimb;
+        PMBA.Climbmove.MoveHandsAndArms.performed -= MoveOnClimb;
         PMBA.Climbmove.MoveHandsAndArms.canceled -= MoveOnClimb;
         PMBA.Climbmove.RightHand.performed -= RightHand;
         PMBA.Climbmove.RightHand.canceled -= RightHand;
@@ -207,7 +226,7 @@ public class PlayerMovement : MonoBehaviour
         PMBA.Climbmove.LeftFoot.canceled -= LeftFoot;
     }
 
- 
+
 
 
 
@@ -224,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         jump = ctx.ReadValueAsButton();
-        
+
     }
 
     private void RunOnGround(InputAction.CallbackContext ctx)
@@ -274,7 +293,7 @@ public class PlayerMovement : MonoBehaviour
     private void MoveOnClimb(InputAction.CallbackContext ctx)
     {
 
-        //InputVectorOnClimb = ctx.ReadValue<Vector2>();
+        InputVectorOnClimb = ctx.ReadValue<Vector2>();
 
     }
 
@@ -308,28 +327,39 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-       
 
-        if (GM.hasBag)
+
+        if (GM.hasBag && !GM.isReadyToClimb) // checks if the player has a bag
         {
             HandleJumping();
         }
 
-        if (GM.onBike)
+        if (bike.active && GM.hasBag && GM.hasBike) // checks if bike is selected and purcased
         {
             BikeMovement();
-           
+
         }
-        else if (!GM.onBike)
+        if (!bike.active && !GM.isReadyToClimb)
         {
+
             BasicMovement();
             playerAnim.SetBool("OnBike", false);
             bike.SetActive(false);
             playercollider.enabled = true;
-            
+            ClimbingPrefab.SetActive(false);
         }
-       
-        
+
+        if (GM.isReadyToClimb)
+        {
+            readyToClimb = true;
+            ClimbingMovement();
+        }
+        else
+        {
+            ClimbingPrefab.SetActive(false);
+        }
+
+
         if (IsGrounded())
         {
             onground = true;
@@ -339,12 +369,16 @@ public class PlayerMovement : MonoBehaviour
             onground = false;
             playerAnim.SetBool("Jump", false);
         }
+
+
     }
 
     public bool IsGrounded()
     {
         return Physics.CheckSphere(groundCheck.position, 0.5f, groundLayer);
     }
+
+
     bool OnSlope()
     {
         if (Physics.Raycast(groundCheck.position, Vector3.down, out slopeHit, 0.3f))
@@ -393,16 +427,24 @@ public class PlayerMovement : MonoBehaviour
             if (run)
             {
                 movement = new Vector3(InputVectorOnGround.x, 0f, InputVectorOnGround.y);
+
                 CameraDir = orientation.transform.forward;
+
                 movement = Vector3.Scale(movement, new Vector3(1, 0, 1)).normalized;
+
                 movement = CameraDir * movement.z + cameraPlayer.transform.right * movement.x;
+
                 targetRotation = transform.rotation;
+
                 PlayerRb.MovePosition((Vector3)transform.position + movement * OnGroundRun * Time.deltaTime);
+
                 transform.rotation = targetRotation;
 
 
                 playerAnim.SetFloat(moveAnimationID, 1f, .1f, Time.deltaTime);
+
                 targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+
                 targetRotation = Quaternion.Euler(0, targetAngle, 0);
 
                 if (!GM.hasBag)
@@ -421,15 +463,22 @@ public class PlayerMovement : MonoBehaviour
         else if (InputVectorOnGround.magnitude >= .5f)
         {
             movement = new Vector3(InputVectorOnGround.x, 0f, InputVectorOnGround.y);
+
             Vector3 CameraDir = orientation.transform.forward;
+
             movement = Vector3.Scale(movement, new Vector3(1, 0, 1)).normalized;
+
             movement = CameraDir * movement.z + cameraPlayer.transform.right * movement.x;
+
             Quaternion targetRotation = transform.rotation;
+
             PlayerRb.MovePosition((Vector3)transform.position + movement * onGroundMoveForceNormal * Time.deltaTime);
+
             transform.rotation = targetRotation;
 
-            
+
             float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+
             targetRotation = Quaternion.Euler(0, targetAngle, 0);
 
             if (!GM.hasBag)
@@ -446,16 +495,23 @@ public class PlayerMovement : MonoBehaviour
             if (run)
             {
                 movement = new Vector3(InputVectorOnGround.x, 0f, InputVectorOnGround.y);
+
                 CameraDir = orientation.transform.forward;
+
                 movement = Vector3.Scale(movement, new Vector3(1, 0, 1)).normalized;
+
                 movement = CameraDir * movement.z + cameraPlayer.transform.right * movement.x;
+
                 targetRotation = transform.rotation;
+
                 PlayerRb.MovePosition((Vector3)transform.position + movement * OnGroundRun * Time.deltaTime);
+
                 transform.rotation = targetRotation;
 
 
-                
+
                 targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+
                 targetRotation = Quaternion.Euler(0, targetAngle, 0);
 
                 if (!GM.hasBag)
@@ -468,12 +524,13 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
             }
 
         }
         else if (InputVectorOnGround.magnitude <= 0.1f)
         {
-            
+
             if (!GM.hasBag)
             {
                 playerAnim.SetFloat(moveAnimationID, 0f, .3f, Time.deltaTime);
@@ -482,8 +539,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 playerAnim.SetFloat(moveWithBagId, 0f, .3f, Time.deltaTime);
             }
+
             run = false;
+
         }
+
         if (OnSlope())
         {
             PlayerRb.useGravity = false;
@@ -515,8 +575,8 @@ public class PlayerMovement : MonoBehaviour
             jumpTimer = 0f;  // reset the jump timer
             jumpCount++;
             PlayerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);  // apply the initial jump force
-            
-            
+
+
         }
         else if (jump && jumpCount < maxJumps && !IsGrounded())
         {
@@ -549,19 +609,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-   
+
     void BikeMovement()
     {
-        
-        bike.SetActive(true);
-        playerAnim.SetBool("OnBike", true);
-        leftFoot.transform.position = leftFootBike.transform.position;
-        rightFoot.transform.position = rightFootBike.transform.position;
-        Lefthand.transform.position = LefthandBike.transform.position;
-        rightHand.transform.position = rightHandBike.transform.position;
-        bike.transform.SetParent(this.transform);
-        
-        // PlayerMovement
+
+
+        playerAnim.SetBool("OnBike", true);                                 // Switches Blend Tree
+        leftFoot.transform.position = leftFootBike.transform.position;      //trackers for procedrual animations moves transfor to the ones theire supposed to be moving with
+        rightFoot.transform.position = rightFootBike.transform.position;    //trackers for procedrual animations moves transfor to the ones theire supposed to be moving with
+        Lefthand.transform.position = LefthandBike.transform.position;      //trackers for procedrual animations moves transfor to the ones theire supposed to be moving with
+        rightHand.transform.position = rightHandBike.transform.position;    //trackers for procedrual animations moves transfor to the ones theire supposed to be moving with
+                                                                            //bike.transform.SetParent(this.transform);                               
+
 
 
 
@@ -570,7 +629,8 @@ public class PlayerMovement : MonoBehaviour
         if (InputVectorOnBike.magnitude >= .1f)
         {
             playercollider.enabled = false;
-            //Bike Moves!!!!!!!!!!!!
+
+            //Bike Moves
             movementBike = new Vector3(InputVectorOnBike.x, 0f, InputVectorOnBike.y);
             Vector3 CameraDir = bikeOrientation.transform.forward;
             movementBike = Vector3.Scale(movementBike, new Vector3(1, 0, 1)).normalized;
@@ -579,11 +639,12 @@ public class PlayerMovement : MonoBehaviour
             PlayerRb.MovePosition((Vector3)transform.position + movementBike * bikespeed * Time.deltaTime);
             transform.rotation = targetRotation;
 
-
+            //Rotates bike 
             float targetAngle = Mathf.Atan2(movementBike.x, movementBike.z) * Mathf.Rad2Deg;
-            targetRotation = Quaternion.Euler(0, targetAngle , 0);
+            targetRotation = Quaternion.Euler(0, targetAngle, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeedBike * Time.deltaTime);
 
+            //Rotates fork of bike
             float forkTargetAngle = Mathf.Atan2(movementBike.x, movementBike.z) * Mathf.Rad2Deg;
             Quaternion forkTargetRotation = Quaternion.Euler(-90, forkTargetAngle - 180, 0);
             fork.transform.rotation = Quaternion.Slerp(fork.transform.rotation, forkTargetRotation, forkRotationSpeed * Time.deltaTime);
@@ -595,14 +656,17 @@ public class PlayerMovement : MonoBehaviour
 
 
         }
+
+        //controlls speed of bike and rotations on pedals and wheels
         Vector2 joystickvalue = InputVectorOnBikeSpeed;
+
         // Calculate the rotation angle based on input
         float rotationAngle = (joystickvalue.x + previousJoystickValue.x) * rotationSpeed * Time.deltaTime;
         float rotationAngleBike = (joystickvalue.x + previousJoystickValue.x) * rotationSpeed * Time.deltaTime;
         float rotationAngleTurnWheels = (joystickvalue.x + previousJoystickValue.x) * rotationSpeed * Time.deltaTime;
 
 
-     
+
         // Update the current value based on the rotation angle
         bikespeed += rotationAngle;
         rotationSpeedBike += rotationAngleBike;
@@ -612,10 +676,67 @@ public class PlayerMovement : MonoBehaviour
         bikespeed = Mathf.Clamp(bikespeed, minValueSpeedBike, maxValueSpeedBike);
         rotationSpeedBike = Mathf.Clamp(rotationSpeedBike, minRotateValueSpeedBike, maxRotateValueSpeedBike);
         TB.RotationSpeed = Mathf.Clamp(TB.RotationSpeed, minWheelTurn, maxWheelTurn);
+
         // Update the previous joystick value for the next frame
         previousJoystickValue = joystickvalue;
-        
-    }
-
 
     }
+
+    void ClimbingMovement()
+    {
+        ClimbingPrefab.SetActive(true);
+
+        playerAnim.SetBool("IsClimbing", true);
+
+        float h = InputVectorOnClimb.x;
+        float v = InputVectorOnClimb.y;
+        Vector2 input = SquareToCircle(new Vector2(h, v));
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 20, ClimbLayer))
+        {
+            Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.green); // Draw the forward raycast in green
+            transform.forward = -hit.normal;
+            float targetDistance = hit.distance - wallDistanceOffset; // Calculate the target distance from the hit point minus the offset
+            PlayerRb.position = Vector3.Lerp(PlayerRb.position, hit.point + hit.normal * targetDistance, 30f * Time.fixedDeltaTime);
+        }
+        else
+        {
+            GM.isReadyToClimb = false;
+        }
+
+        // Draw side raycasts to visualize wall detection
+        Vector3 leftRaycastOrigin = transform.position + transform.right * -sideRaycastOffset;
+        Vector3 rightRaycastOrigin = transform.position + transform.right * sideRaycastOffset;
+        RaycastHit leftHit;
+        RaycastHit rightHit;
+        if (Physics.Raycast(leftRaycastOrigin, -transform.up, out leftHit, 0.3f, ClimbLayer) && Physics.Raycast(rightRaycastOrigin, -transform.up, out rightHit, 0.3f, ClimbLayer))
+        {
+            Debug.DrawRay(leftRaycastOrigin, -transform.up * leftHit.distance, Color.blue); // Draw the left side raycast in blue
+            Debug.DrawRay(rightRaycastOrigin, -transform.up * rightHit.distance, Color.red); // Draw the right side raycast in red
+
+            // Determine which wall to climb based on the side raycast hits
+            if (leftHit.distance < rightHit.distance)
+            {
+                // Climb on the left wall
+                float targetDistance = leftHit.distance - wallDistanceOffset; // Calculate the target distance from the hit point minus the offset
+                PlayerRb.position = Vector3.Lerp(PlayerRb.position, leftHit.point + leftHit.normal * targetDistance, 10f * Time.fixedDeltaTime);
+            }
+            else
+            {
+                // Climb on the right wall
+                float targetDistance = rightHit.distance - wallDistanceOffset; // Calculate the target distance from the hit point minus the offset
+                PlayerRb.position = Vector3.Lerp(PlayerRb.position, rightHit.point + rightHit.normal * targetDistance, 10f * Time.fixedDeltaTime);
+            }
+        }
+
+        PlayerRb.velocity = transform.TransformDirection(input) * climbspeed;
+    }
+
+    Vector2 SquareToCircle(Vector2 input)
+    {
+
+        return (input.sqrMagnitude >= 1f) ? input.normalized : input;
+    }
+
+}
