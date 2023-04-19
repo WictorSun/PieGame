@@ -10,12 +10,17 @@ public class GameManager : MonoBehaviour
 
     [Header("Vehicles GameObjects")]
     public GameObject[] Vehicles;
+    [SerializeField] private GameObject _bagMainBox;
+    [SerializeField] private GameObject _bagLidBox;
+    [SerializeField] private GameObject _bagLeftStrapBox;
+    [SerializeField] private GameObject _bagRightStrapBox;
 
     [Header("Has Items and Stuff")]
     public bool hasBag;
     public bool hasBike;
     public bool isReadyToClimb;
-   
+
+    [SerializeField] private Animator _playeranim;
 
     [Header("Bools for Buttons InputSystem")]
     private bool startPressed;
@@ -105,6 +110,13 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-      
+        if (hasBag)
+        {
+            _playeranim.SetBool("HasBag", true);
+            _bagMainBox.SetActive(true);
+            _bagLidBox.SetActive(true);
+            _bagLeftStrapBox.SetActive(true);
+            _bagRightStrapBox.SetActive(true);
+        }
     }
 }

@@ -12,7 +12,7 @@ public class TurnBikeWheels : MonoBehaviour
     public GameObject pedalR;
     public float RotationSpeed;
     public float RotationSpeed2;
-    public PlayerMovement PM;
+    public InputHandler IH;
     
 
     public float crankMultiplier = 2f;
@@ -32,6 +32,6 @@ public class TurnBikeWheels : MonoBehaviour
     void RotateObject(GameObject obj, float multiplier)
     {
         //obj.transform.Rotate(Time.fixedDeltaTime * rb.velocity.magnitude * (360f / RotationSpeed) * multiplier, 0, 0);
-        obj.transform.Rotate(Time.deltaTime * PM.InputVectorOnBike.magnitude * (360f / RotationSpeed) * multiplier, 0, 0);
+        obj.transform.Rotate(Time.deltaTime * IH.InputVectorOnBike.magnitude * (360f / RotationSpeed) * multiplier, 0, 0);
     }
 }
