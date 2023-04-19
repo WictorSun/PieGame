@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     public PlayerMovementBigActionMap PMBA;
-
+    
     //MovementVectors
     public Vector2 InputVectorOnGround { get; private set; }
     public Vector2 InputVectorOnBike { get;  private set; }
@@ -28,7 +28,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private bool onground;
     [SerializeField] private bool climbing;
 
-
+    public bool Jump { get { return jump; } set { jump = value; } }
 
 
 
@@ -228,6 +228,7 @@ public class InputHandler : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log(InputVectorOnGround);
+        //Debug.Log(InputVectorOnGround);
     }
+   
 }

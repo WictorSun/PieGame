@@ -19,6 +19,8 @@ namespace StateMachine
         int _moveAnimationID;
         int _moveWithBagID;
 
+        // Bools
+        private bool Opt1;
         //Transforms
         private Transform _orientation;
         private Transform _cameraPlayer;
@@ -89,16 +91,30 @@ namespace StateMachine
             }
             else if (_GM.hasBag)
             {
+                
                 _playerAnim.SetFloat(_moveWithBagID, .3f, .1f, Time.deltaTime);
             }
         }
         public override void ChangeState()
         {
+            _inputVectorOnGround = _parent.IH.InputVectorOnGround;
+            if (_inputVectorOnGround.magnitude >= .5f)
+            {
 
+                _runner.SetState(typeof(NormalWalkState));
+            }
+            if (_inputVectorOnGround.magnitude <= 0.1f)
+            {
+                
+                _runner.SetState(typeof(IdleState));
+            }
         }
         public override void Exit()
         {
-
+            if (Opt1)
+            {
+               
+            }
         }
     }
 

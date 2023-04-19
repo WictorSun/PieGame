@@ -33,11 +33,12 @@ namespace StateMachine
         {
             _activeState.CaptureInput();
             _activeState.Update();
-            _activeState.ChangeState();
+            
         }
 
         private void FixedUpdate()
         {
+            _activeState.ChangeState();
             _activeState.FixedUpdate();
         }
 

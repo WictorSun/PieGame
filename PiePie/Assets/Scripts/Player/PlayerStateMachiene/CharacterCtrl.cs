@@ -11,6 +11,7 @@ namespace StateMachine
         public PlayerMovementBigActionMap PMBA;
         [SerializeField]private GameManager _GM;
         public InputHandler IH { get; private set; }
+        [SerializeField] AmIGrounded _AIG;
 
         [Header("GameObjects")]
         [SerializeField] private GameObject playerprefab;
@@ -28,8 +29,8 @@ namespace StateMachine
         int moveAnimationID;
         int moveWithBagId;
 
-        
 
+        public bool _isGrounded;
         
 
         [Header("Floats")]
@@ -43,11 +44,11 @@ namespace StateMachine
         public float jumpForce = 10f;
         public float maxJumpTime = 1f;
         public float fallMultiplier = 2.5f;
-        private float jumpTimer = 0f;
+        public float jumpTimer = 0.2f;
         public int maxJumps = 2;
         public int jumpCount = 0;
         public bool isJumpingPressed;
-
+        public bool jump;
         [Header("Bike")]
         
        
@@ -113,8 +114,10 @@ namespace StateMachine
         public Rigidbody PlayerRB { get { return playerRb; } set { playerRb = value; } }
         public TurnBikeWheels TB { get { return _tB; } set { _tB = value; } }
         public GameManager GM { get { return _GM; } }
+        public AmIGrounded AIG { get { return _AIG; } }
 
-
+        //Getters And Setters Bools
+        public bool ISGrounded { get { return _isGrounded; } }
 
         // Getters And Setters GameObjects
         public GameObject Bike { get { return _bike; } set { _bike = value; } }
@@ -134,10 +137,16 @@ namespace StateMachine
         public float OnGroundMoveForceNormal { get { return onGroundMoveForceNormal; } }
         public float OnGroundMoveForceSlow { get { return onGroundMoveForceSlow; } }
         public float OnGroundRunning { get { return OnGroundRun; } }
+        public float JumpTimer { get { return jumpTimer; } set { jumpTimer = value; } }
+        public float JumpForce { get { return jumpForce; } set { jumpForce = value; } }
+        public float MaxJumpTime { get { return maxJumpTime; } set { maxJumpTime = value; } }
+        public float FallMultiplier { get { return fallMultiplier; } set { fallMultiplier = value; } }
 
         // Getters And Setters Animation
         public int MoveAnimationID { get { return moveAnimationID; } set { moveAnimationID = value; } }
         public int MoveWithBagID { get { return moveWithBagId; } set { moveWithBagId = value; } }
+        public int JumpCount { get { return jumpCount; } set { jumpCount = value; } }
+        public int MaxJumps { get { return maxJumps; } set { maxJumps = value; } }
         // Getters And Setters Transforms General
         public Transform CameraPlayer { get { return _cameraPlayer; } }
         public Transform ThisObject { get { return _thisObject; } set { _thisObject = value; } }
@@ -164,12 +173,10 @@ namespace StateMachine
             moveAnimationID = Animator.StringToHash("Move");
             moveWithBagId = Animator.StringToHash("moveWithBag");
 
-            
+           
         }
-        private void Update()
-        {
-            //Debug.Log(IH.InputVectorOnBike);
-           // Debug.Log(IH.InputVectorOnBikeSpeed);
-        }
+       
+
     }
+   
 }

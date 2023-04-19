@@ -20,7 +20,7 @@ namespace StateMachine
             
 
             _playerAnim = parent.PlayerAnimator;
-            _playerAnim.SetBool("OnBike", false);
+           
 
         }
 
@@ -34,20 +34,26 @@ namespace StateMachine
         }
         public override void FixedUpdate()
         {
+            _playerAnim.SetBool("OnBike", false);
             _GM = _parent.GM;
             _inputVectorOnGround = _parent.IH.InputVectorOnGround;
+           
             if (!_GM.hasBag)
             {
-                _playerAnim.SetFloat(_moveAnimationID, 0f, .1f, Time.deltaTime);
+                _playerAnim.SetFloat(_moveAnimationID, .01f, .1f, Time.deltaTime);
             }
             else if (_GM.hasBag)
             {
-                _playerAnim.SetFloat(_moveWithBagID, 0f, .1f, Time.deltaTime);
+                _playerAnim.SetFloat(_moveWithBagID, .01f, .1f, Time.deltaTime);
             }
         }
         public override void ChangeState()
         {
-
+            _inputVectorOnGround = _parent.IH.InputVectorOnGround;
+            if (_inputVectorOnGround.magnitude >= .1f && _inputVectorOnGround.magnitude <= .5f)
+            {
+                _runner.SetState(typeof(SlowWalkState));
+            }
         }
         public override void Exit()
         {

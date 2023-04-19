@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 10f;
     public float maxJumpTime = 1f;
     public float fallMultiplier = 2.5f;
-    private float jumpTimer = 0f;
+    public float jumpTimer = 0f;
     public int maxJumps = 2;
     public int jumpCount = 0;
     public bool isJumpingPressed;

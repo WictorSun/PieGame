@@ -104,7 +104,11 @@ namespace StateMachine
         }
         public override void ChangeState()
         {
-
+             _inputVectorOnGround = _parent.IH.InputVectorOnGround;
+            if (_inputVectorOnGround.magnitude >= .1f && _inputVectorOnGround.magnitude <= .5f)
+            {
+                _runner.SetState(typeof(SlowWalkState));
+            }
         }
         public override void Exit()
         {

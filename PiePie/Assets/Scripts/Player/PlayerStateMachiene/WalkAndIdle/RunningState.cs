@@ -98,7 +98,7 @@ namespace StateMachine
         {
             _playerAnim.SetFloat(_moveWithBagID, 1.2f, .1f, Time.deltaTime);
         }
-
+            Debug.Log(_inputVectorOnGround);
 
     }
     public override void ChangeState()
