@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ee1a84a47ea4f4f8109db965cd0486, type: 3}
   m_Name: SlowWalk
   m_EditorClassIdentifier: 
+  RunAccelRate: 69.8
+  RunDecelRate: 236.4
+  _moveSpeed: 19.8

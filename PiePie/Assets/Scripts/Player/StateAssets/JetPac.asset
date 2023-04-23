@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4a997223f46f4c31a58064af922f9c1, type: 3}
+  m_Name: JetPac
+  m_EditorClassIdentifier: 
+  _bike: {fileID: 0}
+  RunAccelRate: 25
+  RunDecelRate: 25
+  _moveSpeed: 37.03
+  _maxfuel: 4
+  _thrustForce: 11.04
+  _currentFuel: 4
+  _fallMultiplier: 100
+  _timeChangeV: 1
+  _timeLeft: -2.8199975

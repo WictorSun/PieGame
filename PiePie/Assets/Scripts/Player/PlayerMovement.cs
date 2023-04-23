@@ -169,14 +169,7 @@ public class PlayerMovement : MonoBehaviour
         // CLimb ActionMap
         PMBA.Climbmove.MoveHandsAndArms.performed += MoveOnClimb;
         PMBA.Climbmove.MoveHandsAndArms.canceled += MoveOnClimb;
-        PMBA.Climbmove.RightHand.performed += RightHand;
-        PMBA.Climbmove.RightHand.canceled += RightHand;
-        PMBA.Climbmove.LeftHand.performed += LeftHand;
-        PMBA.Climbmove.LeftHand.canceled += LeftHand;
-        PMBA.Climbmove.RightFoot.performed += RightFoot;
-        PMBA.Climbmove.RightFoot.canceled += RightFoot;
-        PMBA.Climbmove.LeftFoot.performed += LeftFoot;
-        PMBA.Climbmove.LeftFoot.canceled += LeftFoot;
+       
 
     }
 
@@ -216,14 +209,7 @@ public class PlayerMovement : MonoBehaviour
         // CLimb ActionMap
         PMBA.Climbmove.MoveHandsAndArms.performed -= MoveOnClimb;
         PMBA.Climbmove.MoveHandsAndArms.canceled -= MoveOnClimb;
-        PMBA.Climbmove.RightHand.performed -= RightHand;
-        PMBA.Climbmove.RightHand.canceled -= RightHand;
-        PMBA.Climbmove.LeftHand.performed -= LeftHand;
-        PMBA.Climbmove.LeftHand.canceled -= LeftHand;
-        PMBA.Climbmove.RightFoot.performed -= RightFoot;
-        PMBA.Climbmove.RightFoot.canceled -= RightFoot;
-        PMBA.Climbmove.LeftFoot.performed -= LeftFoot;
-        PMBA.Climbmove.LeftFoot.canceled -= LeftFoot;
+       
     }
 
 

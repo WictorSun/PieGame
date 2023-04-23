@@ -11,6 +11,9 @@ namespace StateMachine
 
         
         CharacterCtrl _parent;
+        IsFacingWall _IFW;
+        AmIGrounded _AIG;
+        GameManager _GM;
 
         //collider
         private CapsuleCollider _playercollider;
@@ -65,7 +68,13 @@ namespace StateMachine
         private float _maxWheelTurn;
         private float _minValueSpeedBike;
         private float _maxValueSpeedBike;
+        [SerializeField] private float RunAccelRate;
+        [SerializeField] private float RunDecelRate;
+        [SerializeField] private float _timeChangeV;
+        [SerializeField] private float _timeLeft;
 
+        //Bools
+        private bool _changeVehicle;
 
 
         public override void Init(CharacterCtrl parent)
@@ -94,9 +103,9 @@ namespace StateMachine
             _rightFoot = parent._RightFoot;
             _leftHand = parent._LeftHand;
             _rightHand = parent._RightHand;
+            //_changeVehicle = false;
+            _timeLeft = _timeChangeV;
 
-
-            
             _bikeSpeed = parent.BikeSpeed;
             _forkRotationSpeed = parent.ForkRotationSpeed;
             _rotationSpeedBike = parent.RotationSpeedBike;
@@ -121,13 +130,19 @@ namespace StateMachine
         }
         public override void FixedUpdate()
         {
-            Debug.Log(_inputVectorOnBikeSpeed);
-
+            Debug.Log(_changeVehicle);
+            _changeVehicle = _parent.IH.SwitchVehicle1;
             // setting the vector of the movement
             _inputVectorOnBike = _parent.IH.InputVectorOnBike;
 
             _inputVectorOnBikeSpeed = _parent.IH.InputVectorOnBikeSpeed;
 
+            _timeLeft -= Time.deltaTime;
+
+            _AIG = _parent.AIG;
+
+            _GM = _parent.GM;
+           
             //Setting the animation for the bike state
             _playerAnim.SetBool("OnBike", true);
 
@@ -146,27 +161,40 @@ namespace StateMachine
             //Bike Moves
             if (_inputVectorOnBike.magnitude >= .1f)
             {
-                
-            _movementBike = new Vector3(_inputVectorOnBike.x, 0f, _inputVectorOnBike.y);
-            Vector3 CameraDir = _bikeOrientation.transform.forward;
-            _movementBike = Vector3.Scale(_movementBike, new Vector3(1, 0, 1)).normalized;
-            _movementBike = CameraDir * _movementBike.z + _cameraPlayer.transform.right * _movementBike.x;
-            Quaternion targetRotation = _thisObject.transform.rotation;
-            _playerRB.MovePosition((Vector3)_thisObject.transform.position + _movementBike * _bikeSpeed * Time.deltaTime);
-            _thisObject.transform.rotation = targetRotation;
+                _IFW = _parent._IFW;
 
-            //Rotates bike 
-            float targetAngle = Mathf.Atan2(_movementBike.x, _movementBike.z) * Mathf.Rad2Deg;
-            targetRotation = Quaternion.Euler(0, targetAngle, 0);
-            _thisObject.transform.rotation = Quaternion.Slerp(_thisObject.transform.rotation, targetRotation, _rotationSpeedBike * Time.deltaTime);
 
-            //Rotates fork of bike
-            float forkTargetAngle = Mathf.Atan2(_movementBike.x, _movementBike.z) * Mathf.Rad2Deg;
-            Quaternion forkTargetRotation = Quaternion.Euler(-90, forkTargetAngle - 180, 0);
-            _fork.transform.rotation = Quaternion.Slerp(_fork.transform.rotation, forkTargetRotation, _forkRotationSpeed * Time.deltaTime);
+                float forward = _inputVectorOnBike.y * _bikeSpeed;
+                float right = _inputVectorOnBike.x * _bikeSpeed;
+                Vector3 targetSpeed = (!_IFW._isFacingWall() ? _bikeOrientation.forward : Vector3.zero) * forward + _bikeOrientation.right * right;
+
+                Vector3 velocity = _playerRB.velocity;
+                velocity.y = 0;
+
+                Vector3 speedDiff = targetSpeed - velocity;
+
+                float accelRate = (Mathf.Abs(targetSpeed.magnitude) >= 0.5f) ? RunAccelRate : RunDecelRate;
 
 
 
+                Vector3 movement = speedDiff * accelRate;
+
+                //if (_normalVector != Vector3.zero)
+                //    movement = Vector3.ProjectOnPlane(movement, _normalVector);
+
+                _playerRB.AddForce(movement, ForceMode.Force);  
+
+                //Rotates bike
+                Quaternion targetRotation = _thisObject.transform.rotation;
+                _thisObject.transform.rotation = targetRotation;
+                float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+                targetRotation = Quaternion.Euler(0, targetAngle, 0);
+                _thisObject.transform.rotation = Quaternion.Slerp(_thisObject.transform.rotation, targetRotation, _rotationSpeedBike * Time.deltaTime);
+
+                //Rotates fork of bike
+                float forkTargetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+                Quaternion forkTargetRotation = Quaternion.Euler(-90, forkTargetAngle - 180, 0);
+                _fork.transform.rotation = Quaternion.Slerp(_fork.transform.rotation, forkTargetRotation, _forkRotationSpeed * Time.deltaTime);
 
             }
 
@@ -195,11 +223,19 @@ namespace StateMachine
         }
         public override void ChangeState()
         {
+            if (_changeVehicle && !_GM._hasJetPack && _timeLeft <= 0f)
+            {
+                _runner.SetState(typeof(IdleState));
+            }
 
+            if (_changeVehicle && _GM._hasJetPack && _timeLeft <= 0f)
+            {
+                _runner.SetState(typeof(JetPackState));
+            }
         }
         public override void Exit()
         {
-
+           
         }
         
     }

@@ -219,36 +219,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "RightHand",
+                    "name": "CancelClimb",
                     "type": "Button",
-                    "id": "721b5064-3d4e-4e2d-b8e8-6ed1fefc6706",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "LeftHand",
-                    "type": "Button",
-                    "id": "a2a858ff-1c98-4cb2-97ec-a26c6b0e925d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "RightFoot",
-                    "type": "Button",
-                    "id": "f4940311-2a75-4873-bd09-10bec62d8e16",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "LeftFoot",
-                    "type": "Button",
-                    "id": "1093f14f-5c65-411a-b029-e4d261fc36d5",
+                    "id": "d7a58881-662f-4a94-bd1b-d5b48a46fbb7",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -269,45 +242,12 @@
                 },
                 {
                     "name": "",
-                    "id": "648a25fa-a0a8-42a9-9e9a-a8b02fc02a13",
-                    "path": "<Gamepad>/rightShoulder",
+                    "id": "fd00d5ab-51ff-49e5-923b-f4f057c6f032",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RightHand",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "229230f9-b834-442f-a617-05c6c9d49f35",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LeftHand",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "533e3292-83ea-4971-b57b-3f4fc32fc214",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RightFoot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "34c13398-cb98-48b0-95f2-75d5150566aa",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LeftFoot",
+                    "action": "CancelClimb",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

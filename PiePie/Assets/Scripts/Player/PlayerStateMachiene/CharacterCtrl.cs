@@ -12,6 +12,8 @@ namespace StateMachine
         [SerializeField]private GameManager _GM;
         public InputHandler IH { get; private set; }
         [SerializeField] AmIGrounded _AIG;
+        public IsFacingWall _IFW;
+        public Jumping _jumpingSC;
 
         [Header("GameObjects")]
         [SerializeField] private GameObject playerprefab;
@@ -113,7 +115,7 @@ namespace StateMachine
         public CapsuleCollider PlayerCollider { get { return playercollider; } set { playercollider = value; } }
         public Rigidbody PlayerRB { get { return playerRb; } set { playerRb = value; } }
         public TurnBikeWheels TB { get { return _tB; } set { _tB = value; } }
-        public GameManager GM { get { return _GM; } }
+        public GameManager GM { get { return _GM; } set { _GM = value; } }
         public AmIGrounded AIG { get { return _AIG; } }
 
         //Getters And Setters Bools
@@ -172,11 +174,12 @@ namespace StateMachine
             IH = GetComponent<InputHandler>();
             moveAnimationID = Animator.StringToHash("Move");
             moveWithBagId = Animator.StringToHash("moveWithBag");
-
+            _IFW = GetComponent<IsFacingWall>();
+            _jumpingSC = GetComponent<Jumping>();
            
         }
-       
 
+        
     }
    
 }

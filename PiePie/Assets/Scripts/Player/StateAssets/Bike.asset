@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bike: {fileID: 0}
   _fork: {fileID: 0}
+  RunAccelRate: 158.1
+  RunDecelRate: 86.9
+  _timeChangeV: 1
+  _timeLeft: -0.39999965

@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68789ce99230b405080ad3c49e00b4f6, type: 3}
   m_Name: Running
   m_EditorClassIdentifier: 
+  RunAccelRate: 25
+  RunDecelRate: 25
+  _moveSpeed: 68.1

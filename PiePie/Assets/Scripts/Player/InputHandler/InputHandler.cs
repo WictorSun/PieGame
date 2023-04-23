@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,8 @@ public class InputHandler : MonoBehaviour
     public Vector2 InputVectorOnGround { get; private set; }
     public Vector2 InputVectorOnBike { get;  private set; }
     public Vector2 InputVectorOnBikeSpeed { get; private set; }
-    public Vector2 InputVectorOnJetPack;
-    public Vector2 InputVectorOnClimb;
+    public Vector2 InputVectorOnJetPack { get; private set; }
+    public Vector2 InputVectorOnClimb { get; private set; }
 
 
     [Header("Bools")]
@@ -21,16 +22,17 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private bool jumpOnBike;
     [SerializeField] public bool breakOnBike;
     [SerializeField] private bool jetPackRise;
-    [SerializeField] private bool climbRightHand;
-    [SerializeField] private bool climbLeftHand;
-    [SerializeField] private bool climbRightFoot;
-    [SerializeField] private bool climbLeftFoot;
+   
     [SerializeField] private bool onground;
     [SerializeField] private bool climbing;
+    [SerializeField] private bool _cancleClimbing;
+    [SerializeField] private bool _switchVehicle;
 
     public bool Jump { get { return jump; } set { jump = value; } }
-
-
+    public bool CanleClimbing { get { return _cancleClimbing; } set { _cancleClimbing = value; } }
+    public bool SwitchVehicle1 { get { return _switchVehicle; } set { _switchVehicle = value; } }
+    public bool Run { get { return run; } set { run = value; } }
+    public bool Rise { get { return jetPackRise; } set { jetPackRise = value; } }
 
     public void Awake()
     {
@@ -49,11 +51,12 @@ public class InputHandler : MonoBehaviour
         PMBA.BikeMove.Enable();
         PMBA.JetpackMove.Enable();
         PMBA.Climbmove.Enable();
+        PMBA.Interaction.Enable();
 
         // MoveOnGround ActionMap
         PMBA.RegMove.Move.performed += MoveOnGround;
         PMBA.RegMove.Move.canceled += MoveOnGround;
-        PMBA.RegMove.Jump.started += JumpOnGround;
+        PMBA.RegMove.Jump.performed += JumpOnGround;
         PMBA.RegMove.Jump.canceled += JumpOnGround;
         PMBA.RegMove.Run.started += RunOnGround;
         PMBA.RegMove.Run.canceled += RunOnGround;
@@ -69,7 +72,7 @@ public class InputHandler : MonoBehaviour
         PMBA.BikeMove.Break.canceled += BreakOnBike;
 
         // JetPack ActionMap
-        PMBA.JetpackMove.Jetpackmove.started += MoveOnJetPack;
+        PMBA.JetpackMove.Jetpackmove.performed += MoveOnJetPack;
         PMBA.JetpackMove.Jetpackmove.canceled += MoveOnJetPack;
         PMBA.JetpackMove.JetPackRise.performed += RiseOnJetPack;
         PMBA.JetpackMove.JetPackRise.canceled += RiseOnJetPack;
@@ -77,15 +80,14 @@ public class InputHandler : MonoBehaviour
         // CLimb ActionMap
         PMBA.Climbmove.MoveHandsAndArms.performed += MoveOnClimb;
         PMBA.Climbmove.MoveHandsAndArms.canceled += MoveOnClimb;
-        PMBA.Climbmove.RightHand.performed += RightHand;
-        PMBA.Climbmove.RightHand.canceled += RightHand;
-        PMBA.Climbmove.LeftHand.performed += LeftHand;
-        PMBA.Climbmove.LeftHand.canceled += LeftHand;
-        PMBA.Climbmove.RightFoot.performed += RightFoot;
-        PMBA.Climbmove.RightFoot.canceled += RightFoot;
-        PMBA.Climbmove.LeftFoot.performed += LeftFoot;
-        PMBA.Climbmove.LeftFoot.canceled += LeftFoot;
+        PMBA.Climbmove.CancelClimb.performed += JumpOffClif;
+        PMBA.Climbmove.CancelClimb.canceled += JumpOffClif;
 
+        //Interact
+        PMBA.Interaction.SwitchVheicle.started += SwitchVehicle;
+        PMBA.Interaction.SwitchVheicle.canceled += SwitchVehicle;
+        PMBA.Interaction.Start.performed += SwitchVehicle;
+        PMBA.Interaction.Start.canceled += SwitchVehicle;
     }
 
     //Disable Actions
@@ -95,7 +97,7 @@ public class InputHandler : MonoBehaviour
         PMBA.BikeMove.Disable();
         PMBA.JetpackMove.Disable();
         PMBA.Climbmove.Disable();
-
+        PMBA.Interaction.Disable();
         // MoveOnGround ActionMap
         PMBA.RegMove.Move.performed -= MoveOnGround;
         PMBA.RegMove.Move.canceled -= MoveOnGround;
@@ -116,7 +118,7 @@ public class InputHandler : MonoBehaviour
 
 
         // JetPack ActionMap
-        PMBA.JetpackMove.Jetpackmove.started -= MoveOnJetPack;
+        PMBA.JetpackMove.Jetpackmove.performed -= MoveOnJetPack;
         PMBA.JetpackMove.Jetpackmove.canceled -= MoveOnJetPack;
         PMBA.JetpackMove.JetPackRise.performed -= RiseOnJetPack;
         PMBA.JetpackMove.JetPackRise.canceled -= RiseOnJetPack;
@@ -124,14 +126,19 @@ public class InputHandler : MonoBehaviour
         // CLimb ActionMap
         PMBA.Climbmove.MoveHandsAndArms.performed -= MoveOnClimb;
         PMBA.Climbmove.MoveHandsAndArms.canceled -= MoveOnClimb;
-        PMBA.Climbmove.RightHand.performed -= RightHand;
-        PMBA.Climbmove.RightHand.canceled -= RightHand;
-        PMBA.Climbmove.LeftHand.performed -= LeftHand;
-        PMBA.Climbmove.LeftHand.canceled -= LeftHand;
-        PMBA.Climbmove.RightFoot.performed -= RightFoot;
-        PMBA.Climbmove.RightFoot.canceled -= RightFoot;
-        PMBA.Climbmove.LeftFoot.performed -= LeftFoot;
-        PMBA.Climbmove.LeftFoot.canceled -= LeftFoot;
+        PMBA.Climbmove.CancelClimb.performed -= JumpOffClif;
+        PMBA.Climbmove.CancelClimb.canceled -= JumpOffClif;
+
+        //Interact
+        PMBA.Interaction.SwitchVheicle.started -= SwitchVehicle;
+        PMBA.Interaction.SwitchVheicle.canceled -= SwitchVehicle;
+        PMBA.Interaction.Start.performed -= SwitchVehicle;
+        PMBA.Interaction.Start.canceled -= SwitchVehicle;
+    }
+
+    public void SwitchVehicle(InputAction.CallbackContext ctx)
+    {
+        _switchVehicle = !_switchVehicle;
     }
 
     public void MoveOnGround(InputAction.CallbackContext ctx)
@@ -151,7 +158,7 @@ public class InputHandler : MonoBehaviour
     public void RunOnGround(InputAction.CallbackContext ctx)
     {
 
-        run = true;
+        run = ctx.ReadValueAsButton();
 
     }
 
@@ -198,37 +205,14 @@ public class InputHandler : MonoBehaviour
         InputVectorOnClimb = ctx.ReadValue<Vector2>();
 
     }
-
-    public void RightHand(InputAction.CallbackContext ctx)
+    private void JumpOffClif(InputAction.CallbackContext ctx)
     {
-
-        climbRightHand = ctx.ReadValueAsButton();
-
+        _cancleClimbing = ctx.ReadValueAsButton();
     }
 
-    public void LeftHand(InputAction.CallbackContext ctx)
-    {
-
-        climbLeftHand = ctx.ReadValueAsButton();
-
-    }
-
-    public void RightFoot(InputAction.CallbackContext ctx)
-    {
-
-        climbRightFoot = ctx.ReadValueAsButton();
-
-    }
-
-    public void LeftFoot(InputAction.CallbackContext ctx)
-    {
-
-        climbLeftFoot = ctx.ReadValueAsButton();
-
-    }
     private void Update()
     {
-        //Debug.Log(InputVectorOnGround);
+        Debug.Log(_switchVehicle);
     }
    
 }

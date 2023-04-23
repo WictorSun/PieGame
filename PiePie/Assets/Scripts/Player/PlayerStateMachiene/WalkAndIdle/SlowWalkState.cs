@@ -10,7 +10,9 @@ namespace StateMachine
         // references to stateRunner and GameManager
         CharacterCtrl _parent;
         GameManager _GM;
-
+        IsFacingWall _IFW;
+        Jumping _jump;
+        AmIGrounded _AIG;
         // Player Rigidbody
         private Rigidbody _playerRB;
 
@@ -19,23 +21,29 @@ namespace StateMachine
         int _moveAnimationID;
         int _moveWithBagID;
 
-        // Bools
-        private bool Opt1;
         //Transforms
         private Transform _orientation;
-        private Transform _cameraPlayer;
+
         private Transform _thisObject;
 
         //Vectors
-        private Vector3 movement;
+
         private Vector2 _inputVectorOnGround;
 
         //Floats
-        private float _onGroundMoveForceSlow;
+        private float _onGroundMoveForceNormal;
         private float _rotationSpeed;
+        [SerializeField] private float RunAccelRate;
+        [SerializeField] private float RunDecelRate;
+        [SerializeField] private float _moveSpeed;
+
+        private bool _interact;
+        private bool _changeVehicle;
+        private bool _run;
 
         public override void Init(CharacterCtrl parent)
         {
+
             base.Init(parent);
             _parent = parent;
 
@@ -45,14 +53,18 @@ namespace StateMachine
             _playerRB = parent.PlayerRB;
 
             _orientation = parent.Orientation;
-            _cameraPlayer = parent.CameraPlayer;
+
             _thisObject = parent.ThisObject;
 
-            _onGroundMoveForceSlow = parent.OnGroundMoveForceSlow;
+            _onGroundMoveForceNormal = parent.OnGroundMoveForceNormal;
             _rotationSpeed = parent.RotationSpeed;
             _playerAnim.SetBool("OnBike", false);
+
         }
 
+
+
+        //Checks Input
         public override void CaptureInput()
         {
 
@@ -61,29 +73,52 @@ namespace StateMachine
         {
 
         }
+        // Update When Using Physics
         public override void FixedUpdate()
         {
             _moveAnimationID = _parent.MoveAnimationID;
             _moveWithBagID = _parent.MoveWithBagID;
             _inputVectorOnGround = _parent.IH.InputVectorOnGround;
+            _interact = _parent.IH.Jump;
             //getting reference to GameManager and InputVectorOnGround from stateRunner
             _GM = _parent.GM;
+            _IFW = _parent._IFW;
+            _jump = _parent._jumpingSC;
+            _AIG = _parent.AIG;
+            _run = _parent.IH.Run;
+            _changeVehicle = _parent.IH.SwitchVehicle1;
 
-            
-                //Moving the player
-                movement = new Vector3(_inputVectorOnGround.x, 0f, _inputVectorOnGround.y);
-                Vector3 CameraDir = _orientation.transform.forward;
-                movement = Vector3.Scale(movement, new Vector3(1, 0, 1)).normalized;
-                movement = CameraDir * movement.z + _cameraPlayer.transform.right * movement.x;
-                _playerRB.MovePosition((Vector3)_thisObject.transform.position + movement * _onGroundMoveForceSlow * Time.deltaTime);
+            float forward = _inputVectorOnGround.y * _moveSpeed;
+            float right = _inputVectorOnGround.x * _moveSpeed;
+            Vector3 targetSpeed = (!_IFW._isFacingWall() ? _orientation.forward : Vector3.zero) * forward + _orientation.right * right;
 
-                //Rotating the player
-                Quaternion targetRotation = _thisObject.transform.rotation;
-                _thisObject.transform.rotation = targetRotation;
-                float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
-                targetRotation = Quaternion.Euler(0, targetAngle, 0);
-                _thisObject.transform.rotation = Quaternion.Lerp(_thisObject.transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-            
+            Vector3 velocity = _playerRB.velocity;
+            velocity.y = 0;
+
+            Vector3 speedDiff = targetSpeed - velocity;
+
+            float accelRate = (Mathf.Abs(targetSpeed.magnitude) >= .1f && Mathf.Abs(targetSpeed.magnitude) <= .5f) ? RunAccelRate : RunDecelRate;
+
+
+
+            Vector3 movement = speedDiff * accelRate;
+
+            //if (_normalVector != Vector3.zero)
+            //    movement = Vector3.ProjectOnPlane(movement, _normalVector);
+
+            _playerRB.AddForce(movement, ForceMode.Force);
+
+
+
+            ////Rotating the player
+            Quaternion targetRotation = _thisObject.transform.rotation;
+            _thisObject.transform.rotation = targetRotation;
+            float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+            targetRotation = Quaternion.Euler(0, targetAngle, 0);
+            _thisObject.transform.rotation = Quaternion.Lerp(_thisObject.transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+
+
+
             //Checks which Animation BlendTree to play
             if (!_GM.hasBag)
             {
@@ -91,9 +126,10 @@ namespace StateMachine
             }
             else if (_GM.hasBag)
             {
-                
                 _playerAnim.SetFloat(_moveWithBagID, .3f, .1f, Time.deltaTime);
             }
+
+
         }
         public override void ChangeState()
         {
@@ -108,13 +144,27 @@ namespace StateMachine
                 
                 _runner.SetState(typeof(IdleState));
             }
+            if (_GM.hasBag && _IFW._isFacingClimbableWall() && _interact)
+            {
+                _runner.SetState(typeof(ClimbState));
+            }
+            //if (!_AIG.IsGrounded() && !_jump._isJumpingNow)
+            //{
+            //    _runner.SetState(typeof(FallingState));
+            //}
+            if (_AIG.IsGrounded() && _GM.hasBike && _changeVehicle)
+            {
+                _runner.SetState(typeof(BikeState));
+            }
+            if (_AIG.IsGrounded() && _run && _GM.hasBag)
+            {
+
+                _runner.SetState(typeof(RunningState));
+            }
         }
         public override void Exit()
         {
-            if (Opt1)
-            {
-               
-            }
+           
         }
     }
 

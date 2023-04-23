@@ -241,36 +241,9 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""RightHand"",
+                    ""name"": ""CancelClimb"",
                     ""type"": ""Button"",
-                    ""id"": ""721b5064-3d4e-4e2d-b8e8-6ed1fefc6706"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""LeftHand"",
-                    ""type"": ""Button"",
-                    ""id"": ""a2a858ff-1c98-4cb2-97ec-a26c6b0e925d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""RightFoot"",
-                    ""type"": ""Button"",
-                    ""id"": ""f4940311-2a75-4873-bd09-10bec62d8e16"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""LeftFoot"",
-                    ""type"": ""Button"",
-                    ""id"": ""1093f14f-5c65-411a-b029-e4d261fc36d5"",
+                    ""id"": ""d7a58881-662f-4a94-bd1b-d5b48a46fbb7"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -291,45 +264,12 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                 },
                 {
                     ""name"": """",
-                    ""id"": ""648a25fa-a0a8-42a9-9e9a-a8b02fc02a13"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""id"": ""fd00d5ab-51ff-49e5-923b-f4f057c6f032"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RightHand"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""229230f9-b834-442f-a617-05c6c9d49f35"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftHand"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""533e3292-83ea-4971-b57b-3f4fc32fc214"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RightFoot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""34c13398-cb98-48b0-95f2-75d5150566aa"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftFoot"",
+                    ""action"": ""CancelClimb"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -444,10 +384,7 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
         // Climbmove
         m_Climbmove = asset.FindActionMap("Climbmove", throwIfNotFound: true);
         m_Climbmove_MoveHandsAndArms = m_Climbmove.FindAction("MoveHandsAndArms", throwIfNotFound: true);
-        m_Climbmove_RightHand = m_Climbmove.FindAction("RightHand", throwIfNotFound: true);
-        m_Climbmove_LeftHand = m_Climbmove.FindAction("LeftHand", throwIfNotFound: true);
-        m_Climbmove_RightFoot = m_Climbmove.FindAction("RightFoot", throwIfNotFound: true);
-        m_Climbmove_LeftFoot = m_Climbmove.FindAction("LeftFoot", throwIfNotFound: true);
+        m_Climbmove_CancelClimb = m_Climbmove.FindAction("CancelClimb", throwIfNotFound: true);
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_Start = m_Interaction.FindAction("Start", throwIfNotFound: true);
@@ -661,19 +598,13 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
     private readonly InputActionMap m_Climbmove;
     private IClimbmoveActions m_ClimbmoveActionsCallbackInterface;
     private readonly InputAction m_Climbmove_MoveHandsAndArms;
-    private readonly InputAction m_Climbmove_RightHand;
-    private readonly InputAction m_Climbmove_LeftHand;
-    private readonly InputAction m_Climbmove_RightFoot;
-    private readonly InputAction m_Climbmove_LeftFoot;
+    private readonly InputAction m_Climbmove_CancelClimb;
     public struct ClimbmoveActions
     {
         private @PlayerMovementBigActionMap m_Wrapper;
         public ClimbmoveActions(@PlayerMovementBigActionMap wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveHandsAndArms => m_Wrapper.m_Climbmove_MoveHandsAndArms;
-        public InputAction @RightHand => m_Wrapper.m_Climbmove_RightHand;
-        public InputAction @LeftHand => m_Wrapper.m_Climbmove_LeftHand;
-        public InputAction @RightFoot => m_Wrapper.m_Climbmove_RightFoot;
-        public InputAction @LeftFoot => m_Wrapper.m_Climbmove_LeftFoot;
+        public InputAction @CancelClimb => m_Wrapper.m_Climbmove_CancelClimb;
         public InputActionMap Get() { return m_Wrapper.m_Climbmove; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -686,18 +617,9 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                 @MoveHandsAndArms.started -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnMoveHandsAndArms;
                 @MoveHandsAndArms.performed -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnMoveHandsAndArms;
                 @MoveHandsAndArms.canceled -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnMoveHandsAndArms;
-                @RightHand.started -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnRightHand;
-                @RightHand.performed -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnRightHand;
-                @RightHand.canceled -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnRightHand;
-                @LeftHand.started -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnLeftHand;
-                @LeftHand.performed -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnLeftHand;
-                @LeftHand.canceled -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnLeftHand;
-                @RightFoot.started -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnRightFoot;
-                @RightFoot.performed -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnRightFoot;
-                @RightFoot.canceled -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnRightFoot;
-                @LeftFoot.started -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnLeftFoot;
-                @LeftFoot.performed -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnLeftFoot;
-                @LeftFoot.canceled -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnLeftFoot;
+                @CancelClimb.started -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnCancelClimb;
+                @CancelClimb.performed -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnCancelClimb;
+                @CancelClimb.canceled -= m_Wrapper.m_ClimbmoveActionsCallbackInterface.OnCancelClimb;
             }
             m_Wrapper.m_ClimbmoveActionsCallbackInterface = instance;
             if (instance != null)
@@ -705,18 +627,9 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
                 @MoveHandsAndArms.started += instance.OnMoveHandsAndArms;
                 @MoveHandsAndArms.performed += instance.OnMoveHandsAndArms;
                 @MoveHandsAndArms.canceled += instance.OnMoveHandsAndArms;
-                @RightHand.started += instance.OnRightHand;
-                @RightHand.performed += instance.OnRightHand;
-                @RightHand.canceled += instance.OnRightHand;
-                @LeftHand.started += instance.OnLeftHand;
-                @LeftHand.performed += instance.OnLeftHand;
-                @LeftHand.canceled += instance.OnLeftHand;
-                @RightFoot.started += instance.OnRightFoot;
-                @RightFoot.performed += instance.OnRightFoot;
-                @RightFoot.canceled += instance.OnRightFoot;
-                @LeftFoot.started += instance.OnLeftFoot;
-                @LeftFoot.performed += instance.OnLeftFoot;
-                @LeftFoot.canceled += instance.OnLeftFoot;
+                @CancelClimb.started += instance.OnCancelClimb;
+                @CancelClimb.performed += instance.OnCancelClimb;
+                @CancelClimb.canceled += instance.OnCancelClimb;
             }
         }
     }
@@ -799,10 +712,7 @@ public partial class @PlayerMovementBigActionMap : IInputActionCollection2, IDis
     public interface IClimbmoveActions
     {
         void OnMoveHandsAndArms(InputAction.CallbackContext context);
-        void OnRightHand(InputAction.CallbackContext context);
-        void OnLeftHand(InputAction.CallbackContext context);
-        void OnRightFoot(InputAction.CallbackContext context);
-        void OnLeftFoot(InputAction.CallbackContext context);
+        void OnCancelClimb(InputAction.CallbackContext context);
     }
     public interface IInteractionActions
     {
