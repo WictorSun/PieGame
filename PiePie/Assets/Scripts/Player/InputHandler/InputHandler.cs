@@ -138,7 +138,7 @@ public class InputHandler : MonoBehaviour
 
     public void SwitchVehicle(InputAction.CallbackContext ctx)
     {
-        _switchVehicle = !_switchVehicle;
+        _switchVehicle = ctx.ReadValueAsButton();
     }
 
     public void MoveOnGround(InputAction.CallbackContext ctx)
@@ -212,7 +212,7 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(_switchVehicle);
+        //Debug.Log(_switchVehicle);
     }
    
 }

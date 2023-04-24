@@ -36,6 +36,8 @@ namespace StateMachine
         [SerializeField] private float RunAccelRate;
         [SerializeField] private float RunDecelRate;
         [SerializeField] private float _moveSpeed;
+        [SerializeField] private float _timeChangeV;
+        [SerializeField] private float _timeLeft;
 
         private bool _interact;
         private bool _changeVehicle;
@@ -46,7 +48,7 @@ namespace StateMachine
 
             base.Init(parent);
             _parent = parent;
-
+            _timeLeft = _timeChangeV;
             _playerAnim = parent.PlayerAnimator;
 
 
@@ -86,6 +88,7 @@ namespace StateMachine
             _jump = _parent._jumpingSC;
             _AIG = _parent.AIG;
             _run = _parent.IH.Run;
+            _timeLeft -= Time.deltaTime;
             _changeVehicle = _parent.IH.SwitchVehicle1;
 
             float forward = _inputVectorOnGround.y * _moveSpeed;
@@ -160,6 +163,11 @@ namespace StateMachine
             {
 
                 _runner.SetState(typeof(RunningState));
+            }
+            if (_GM.hasBike && _changeVehicle && _timeLeft < 0f)
+            {
+
+                _runner.SetState(typeof(BikeState));
             }
         }
         public override void Exit()

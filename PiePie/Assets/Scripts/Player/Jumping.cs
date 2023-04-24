@@ -9,6 +9,7 @@ public class Jumping : MonoBehaviour
     [SerializeField] private GameManager _GM;
     public InputHandler _IH { get; private set; }
     [SerializeField] public Rigidbody _playerRb;
+    [SerializeField] private PlayerTriggerDialog _PTD;
 
     [SerializeField] Animator _playerAnim;
     [SerializeField] AmIGrounded _AIG;
@@ -27,7 +28,7 @@ public class Jumping : MonoBehaviour
 
     public bool _isJumpingNow;
 
-    [SerializeField] private float _jumpBufferTime = 0;
+   // [SerializeField] private float _jumpBufferTime = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +45,12 @@ public class Jumping : MonoBehaviour
         _playerAnim.SetBool("Jump", false);
 
         // Check if enough time has passed since last jump to allow a new jump
-        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGrounded() && !_IFW._isFacingClimbableWall() )
+        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGrounded() && !_IFW._isFacingClimbableWall() && !_PTD._nojump)
+        {
+            Jump();
+            _isJumpingNow = true;
+        }
+        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGroundedOnClimb() && !_IFW._isFacingClimbableWall() && !_PTD._nojump)
         {
             Jump();
             _isJumpingNow = true;

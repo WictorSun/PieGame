@@ -75,7 +75,7 @@ namespace StateMachine
             _bike.SetActive(false);
             _playercollider.enabled = true;
 
-            Debug.Log(_interact);
+            //.Log(_interact);
             
                 
                 if (!_GM.hasBag)
@@ -114,6 +114,10 @@ namespace StateMachine
             {
                 
                 _runner.SetState(typeof(BikeState));
+            }
+            if (_GM._isInDia)
+            {
+                _runner.SetState(typeof(InteractionState));
             }
         }
         public override void Exit()

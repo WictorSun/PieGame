@@ -7,6 +7,7 @@ public class IsFacingWall : MonoBehaviour
     [SerializeField] private LayerMask _WallLayer;
     [SerializeField] private Transform _wallCheck;
 
+    [SerializeField] private LayerMask _NPC;
     [SerializeField] private LayerMask _climbLayer;
 
     private void Update()
@@ -22,6 +23,7 @@ public class IsFacingWall : MonoBehaviour
     {
         return Physics.CheckSphere(_wallCheck.position, 1f, _climbLayer);
     }
+   
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

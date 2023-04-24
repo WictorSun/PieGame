@@ -5,6 +5,7 @@ using UnityEngine;
 public class AmIGrounded : MonoBehaviour
 {
     [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private LayerMask _hasClimbedWallLayer;
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private bool _grounded;
 
@@ -31,5 +32,9 @@ public class AmIGrounded : MonoBehaviour
     public bool IsGrounded()
     {
         return Physics.CheckSphere(_groundCheck.position, 0.5f, _groundLayer);
+    }
+    public bool IsGroundedOnClimb()
+    {
+        return Physics.CheckSphere(_groundCheck.position, 0.5f, _hasClimbedWallLayer);
     }
 }

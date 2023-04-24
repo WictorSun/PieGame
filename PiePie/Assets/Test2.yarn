@@ -1,0 +1,24 @@
+﻿title: Test2
+tags:
+---
+Dragon: Hey this is a test!!
+    -> Nice!!
+        <<jump f>>
+    -> Not Nice!!!
+        <<jump Node>> 
+
+===
+
+title: f
+position: 281,81
+---
+Dragon: Thanks 
+
+<<disable Dragon>>
+===
+title: Node
+position: -285,-64
+---
+Dragon: F*** you!
+<<disable Dragon>>
+===

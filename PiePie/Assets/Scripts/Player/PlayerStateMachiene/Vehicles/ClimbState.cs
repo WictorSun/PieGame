@@ -39,6 +39,7 @@ namespace StateMachine
         private Animator _playerAnim;
 
         // Bools
+        private bool _isReadyToClimb;
         private bool _cancleClimb;
 
         public override void Init(CharacterCtrl parent)
@@ -53,7 +54,7 @@ namespace StateMachine
             _bikeOrientation = parent.BikeOrientation;
             _cameraPlayer = parent.CameraPlayer;
             _thisObject = parent.ThisObject;
-
+            _isReadyToClimb = true;
            
         }
 
@@ -87,7 +88,7 @@ namespace StateMachine
             }
             else
             {
-                _GM.isReadyToClimb = false;
+                _isReadyToClimb = false;
             }
 
             // Draw side raycasts to visualize wall detection
@@ -125,6 +126,10 @@ namespace StateMachine
         public override void ChangeState()
         {
             if (_cancleClimb)
+            {
+                _runner.SetState(typeof(IdleState));
+            }
+            if (!_isReadyToClimb)
             {
                 _runner.SetState(typeof(IdleState));
             }

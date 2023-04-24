@@ -15,3 +15,5 @@ MonoBehaviour:
   RunAccelRate: 69.8
   RunDecelRate: 236.4
   _moveSpeed: 19.8
+  _timeChangeV: 1
+  _timeLeft: 0.96000004

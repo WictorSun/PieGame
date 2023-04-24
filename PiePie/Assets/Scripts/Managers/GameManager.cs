@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public bool hasBike;
     public bool _hasJetPack;
     public bool isReadyToClimb;
+    public  bool _isInDia;
 
     [SerializeField] private Animator _playeranim;
 
@@ -57,3 +58,4 @@ public class GameManager : MonoBehaviour
         }
     }
 }
+

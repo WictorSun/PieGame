@@ -146,7 +146,7 @@ namespace StateMachine
             {
                 _runner.SetState(typeof(IdleState));
             }
-            if (_GM.hasBag && _IFW._isFacingClimbableWall() )
+            if (_GM.hasBag && _IFW._isFacingClimbableWall() && _interact)
             {
                 _runner.SetState(typeof(ClimbState));
             }
