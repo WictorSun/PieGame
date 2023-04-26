@@ -15,6 +15,8 @@ public class YarnInteractable : MonoBehaviour {
     private bool interactable = true;
     private bool isCurrentConversation = false;
     private float defaultIndicatorIntensity;
+    private float _timeleft = 1f;
+    private float _counter;
 
     public void Start() {
         //dialogueRunner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
@@ -26,10 +28,11 @@ public class YarnInteractable : MonoBehaviour {
             defaultIndicatorIntensity = lightIndicatorObject.intensity;
             lightIndicatorObject.intensity = 0;
         }
+        _counter = _timeleft;
     }
 
     public void OnMouseDown() {
-        if (interactable && !dialogueRunner.IsDialogueRunning) {
+        if (interactable && !dialogueRunner.IsDialogueRunning && _counter <= 0f) {
             StartConversation();
         }
     }
@@ -37,6 +40,7 @@ public class YarnInteractable : MonoBehaviour {
     private void StartConversation() {
         Debug.Log($"Started conversation with {name}.");
         isCurrentConversation = true;
+        _GM._isInDia = true;
         // if (lightIndicatorObject != null) {
         //     lightIndicatorObject.intensity = defaultIndicatorIntensity;
         // }
@@ -50,22 +54,16 @@ public class YarnInteractable : MonoBehaviour {
             //     lightIndicatorObject.intensity = 0;
             // }
             isCurrentConversation = false;
+            _GM._isInDia = false;
             Debug.Log("Ended coversation");
+            _counter = _timeleft;
         }
     }
 
     private void Update()
     {
-        if (isCurrentConversation)
-        {
-            _GM._isInDia = true;
-
-        }
-        else
-        {
-            _GM._isInDia = false;
-
-        }
+       
+        _counter -= Time.deltaTime;
     }
 
     [YarnCommand("disable")]

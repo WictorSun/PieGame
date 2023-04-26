@@ -169,6 +169,10 @@ namespace StateMachine
 
                 _runner.SetState(typeof(BikeState));
             }
+            if (_GM._CamIsActive)
+            {
+                _runner.SetState(typeof(PauseState));
+            }
         }
         public override void Exit()
         {

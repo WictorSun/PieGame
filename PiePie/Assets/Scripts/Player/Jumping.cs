@@ -45,12 +45,12 @@ public class Jumping : MonoBehaviour
         _playerAnim.SetBool("Jump", false);
 
         // Check if enough time has passed since last jump to allow a new jump
-        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGrounded() && !_IFW._isFacingClimbableWall() && !_PTD._nojump)
+        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGrounded() && !_IFW._isFacingClimbableWall() && !_GM._isInDia && !_PTD._nojump && _GM.hasBag && !_GM._CamIsActive)
         {
             Jump();
             _isJumpingNow = true;
         }
-        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGroundedOnClimb() && !_IFW._isFacingClimbableWall() && !_PTD._nojump)
+        if (Time.time - _lastJumpTime > _jumpCooldown && _IH.Jump && _jumpCount < _maxJumps && _AIG.IsGroundedOnClimb() && !_IFW._isFacingClimbableWall() && !_GM._isInDia && !_PTD._nojump && _GM.hasBag && !_GM._CamIsActive)
         {
             Jump();
             _isJumpingNow = true;

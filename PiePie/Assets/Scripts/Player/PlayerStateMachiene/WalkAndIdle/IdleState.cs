@@ -8,7 +8,7 @@ namespace StateMachine
     public  class IdleState : State<CharacterCtrl>
     {
         CharacterCtrl _parent;
-        GameManager _GM;
+        [SerializeField] GameManager _GM;
         IsFacingWall _IFW;
         Jumping _jump;
 
@@ -40,7 +40,7 @@ namespace StateMachine
             base.Init(parent);
             _parent = parent;
             _playerRB = parent.PlayerRB;
-
+            _GM = _parent.GM;
             _timeLeft = _timeChangeV;
             //_changeVehicle = false;
 
@@ -75,8 +75,6 @@ namespace StateMachine
             _bike.SetActive(false);
             _playercollider.enabled = true;
 
-            //.Log(_interact);
-            
                 
                 if (!_GM.hasBag)
                 {
@@ -110,14 +108,19 @@ namespace StateMachine
             //{
             //    _runner.SetState(typeof(FallingState));
             //}
-            if(_GM.hasBike && _changeVehicle && _timeLeft < 0f)
+            if (_GM.hasBike && _changeVehicle && _timeLeft < 0f)
             {
-                
+
                 _runner.SetState(typeof(BikeState));
             }
             if (_GM._isInDia)
             {
                 _runner.SetState(typeof(InteractionState));
+                
+            }
+            if (_GM._CamIsActive)
+            {
+                _runner.SetState(typeof(PauseState));
             }
         }
         public override void Exit()

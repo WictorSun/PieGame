@@ -1,0 +1,20 @@
+﻿title: Test3
+tags:
+---
+
+Dragon: Hey!
+Dragon: Do you want to buy my bike for five dollars?
+    -> Yes!!
+        <<if MyMoney() > 5 >>
+        Bike: Thank You!
+            <<BuyTheBike>>  
+            <<disable Dragon>>
+        <<else>>
+            Dragon: You dont have the money! Come back once you have 5 dollars...
+            <<stop>>
+        <<endif>>
+    -> No!!!
+       Dragon: comeback later When you want to buy one!
+       <<stop>>
+
+===

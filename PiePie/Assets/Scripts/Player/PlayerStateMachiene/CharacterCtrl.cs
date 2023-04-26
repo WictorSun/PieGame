@@ -9,7 +9,7 @@ namespace StateMachine
 
         [Header("Reference Other Scripts")]
         public PlayerMovementBigActionMap PMBA;
-        [SerializeField]private GameManager _GM;
+        public GameManager GM;
         public InputHandler IH { get; private set; }
         [SerializeField] AmIGrounded _AIG;
         public IsFacingWall _IFW;
@@ -115,7 +115,7 @@ namespace StateMachine
         public CapsuleCollider PlayerCollider { get { return playercollider; } set { playercollider = value; } }
         public Rigidbody PlayerRB { get { return playerRb; } set { playerRb = value; } }
         public TurnBikeWheels TB { get { return _tB; } set { _tB = value; } }
-        public GameManager GM { get { return _GM; } set { _GM = value; } }
+        //public GameManager GM { get { return _GM; } set { _GM = value; } }
         public AmIGrounded AIG { get { return _AIG; } }
 
         //Getters And Setters Bools
@@ -176,6 +176,7 @@ namespace StateMachine
             moveWithBagId = Animator.StringToHash("moveWithBag");
             _IFW = GetComponent<IsFacingWall>();
             _jumpingSC = GetComponent<Jumping>();
+            GM = FindObjectOfType<GameManager>();
            
         }
 

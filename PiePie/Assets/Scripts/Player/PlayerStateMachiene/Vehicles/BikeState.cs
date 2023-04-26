@@ -232,6 +232,10 @@ namespace StateMachine
             {
                 _runner.SetState(typeof(JetPackState));
             }
+            if (_GM._CamIsActive)
+            {
+                _runner.SetState(typeof(PauseState));
+            }
         }
         public override void Exit()
         {
