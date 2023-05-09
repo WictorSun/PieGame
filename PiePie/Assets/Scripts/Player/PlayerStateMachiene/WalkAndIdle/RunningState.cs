@@ -142,7 +142,7 @@ namespace StateMachine
     }
     public override void ChangeState()
     {
-            if (_GM.hasBag && _IFW._isFacingClimbableWall() && _parent.IH.Jump)
+            if (_GM.hasBag && _IFW._isFacingClimbableWall() && _parent.IH.Interact)
             {
                 _runner.SetState(typeof(ClimbState));
             }

@@ -14,6 +14,7 @@ public class Jumping : MonoBehaviour
     [SerializeField] Animator _playerAnim;
     [SerializeField] AmIGrounded _AIG;
     [SerializeField] IsFacingWall _IFW;
+    //[SerializeField] private List<Billboarding> _billboards;
 
     [Header("Jumping")]
     public float _jumpForce = 10f;

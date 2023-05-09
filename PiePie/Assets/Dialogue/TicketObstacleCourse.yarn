@@ -1,0 +1,11 @@
+﻿title: TicketObstacleCourse
+tags:
+---
+
+<<if TicketBool()>>
+
+Climber: Heyo Everyone!!!! Who wants to be the next Climb master! You can win a ticket to theeeeeeee waaaaaallllll! 
+Player: I'll do it!
+<<StartTutorial>>
+<<endif>>
+===

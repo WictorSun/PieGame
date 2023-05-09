@@ -1,0 +1,26 @@
+﻿title: TicketBoothNPC
+tags:
+---
+<<if !HasTicket()>>
+Ticket Booth Dude: 25dollars.
+Sculley: I'll have one ticket!
+Ticket Booth Dude: Well.. Cant let you through.
+Scully: can I please get a ticket I’ll pay you on my way back… I have to deliver this up at Cube crest town so I can end my shift. 
+Ticket Booth Dude: ummm…. ummmm… no.
+    
+Ticket man: Listen I know how you can get a ticket.
+Sculley: Oh how?
+Ticket Man:Go to EVENT PARK. There is a competition there today where you could win a ticket. 
+Scullry: Cool! Thanks for the tip!
+TicketBool Man: Also that tip is 11 dollars hand it over.
+    -> Sculley: No I wont give you the money. Thats a free tip!
+        <<GetTicket>>
+    -> Sculley: Okay thanks…
+        <<GetTicket>>
+<<else>>
+TicketBool Booth Dude: You got the ticket? 
+Sculley: Yes...
+Ticket Booth Dude: Noice.
+TicketBool Booth Dude: Jump onboard.
+<<endif>>
+===

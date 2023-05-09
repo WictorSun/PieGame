@@ -24,6 +24,7 @@ namespace StateMachine
         [SerializeField] public Rigidbody playerRb;
       
         [SerializeField] Animator playerAnim;
+        [SerializeField] Animator _JetPackAnim;
         private PlayerInput playerinput;
         [SerializeField] private CapsuleCollider playercollider;
 
@@ -98,6 +99,8 @@ namespace StateMachine
         [SerializeField] private float _minValueSpeedBike;
         [SerializeField] private float _maxValueSpeedBike;
 
+        //JetPack
+        [SerializeField] private GameObject _JetPack;
         // Hand And Feet Transforms
         [Header("Transforms")]
 
@@ -112,6 +115,7 @@ namespace StateMachine
 
         // Getters And Setters
         public Animator PlayerAnimator { get { return playerAnim; } set { playerAnim = value; } }
+        public Animator JetPackAnimator { get { return _JetPackAnim; } set { _JetPackAnim = value; } }
         public CapsuleCollider PlayerCollider { get { return playercollider; } set { playercollider = value; } }
         public Rigidbody PlayerRB { get { return playerRb; } set { playerRb = value; } }
         public TurnBikeWheels TB { get { return _tB; } set { _tB = value; } }
@@ -124,6 +128,7 @@ namespace StateMachine
         // Getters And Setters GameObjects
         public GameObject Bike { get { return _bike; } set { _bike = value; } }
         public GameObject Fork { get { return _fork; } set { _fork = value; } }
+        public GameObject JetPack { get { return _JetPack; } set { _JetPack = value; } }
 
         // Getters And Setters Floats
         public float BikeSpeed { get { return _bikespeed; } set { _bikespeed = value; } }

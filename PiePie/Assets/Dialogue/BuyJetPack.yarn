@@ -1,0 +1,51 @@
+﻿title: BuyJetPack
+tags:
+---
+JetPack Sales Man: Hi there fella! Tryin to get up ey? Well how 'bout you buy a jet pack? I can get it to ya for only 125 dollars...
+    -> Yes sure why not!
+        <<if MyMoney() > 5 >>
+        JetPack Sales Man: Thank You!
+            <<BuyTheJetPack>>  
+            <<disable Jetpacksale>>
+        <<else>>
+            JetPack Sales Man: You dont have the money! Come back once you have 5 dollars...
+            <<stop>>
+        <<endif>>
+    -> Sounds dangerous...
+        Jet Pack Sales Man: Naah naah nahh its safe mate! 
+            -> okay why not!
+                <<if MyMoney() > 5 >>
+                    JetPack Sales Man: Thank You!
+                    <<BuyTheJetPack>>  
+                    <<disable Jetpacksale>>
+                <<else>>
+                    JetPack Sales Man: You dont have the money! Come back once you have 5 dollars...
+                    <<stop>>
+                <<endif>>
+            -> I think that's how people die... 
+                Jet Pack Sales Man: We'll you're in a freaking game mate.. 
+                Player: You're in a game! 
+                Jet Pack Sales Man: so are you!
+                    -> No I'm not buying it
+                        Jet Pack Sales Man: Hey if you want to progress in the game you have to buy this jetpack.
+                            -> fuck you!
+                                Jet Pack Sales Man: perfect here's your jetpack! 
+                                    <<if MyMoney() > 5 >>
+                                         JetPack Sales Man: Thank You!
+                                         <<BuyTheJetPack>>  
+                                        <<disable Jetpacksale>>
+                                    <<else>>
+                                        JetPack Sales Man: You dont have the money! Come back once you have 5 dollars...
+                                        <<stop>>
+                                    <<endif>>
+                    -> You crazy.
+                    Jet Pack Sales Man: perfect here's your jetpack! 
+                                    <<if MyMoney() > 5 >>
+                                         JetPack Sales Man: Thank You!
+                                         <<BuyTheJetPack>>  
+                                        <<disable Jetpacksale>>
+                                    <<else>>
+                                        JetPack Sales Man: You dont have the money! Come back once you have 5 dollars...
+                                        <<stop>>
+                                    <<endif>>
+===

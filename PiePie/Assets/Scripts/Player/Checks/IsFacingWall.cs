@@ -9,10 +9,28 @@ public class IsFacingWall : MonoBehaviour
 
     [SerializeField] private LayerMask _NPC;
     [SerializeField] private LayerMask _climbLayer;
+    [SerializeField] private Animator _interactA;
+    [SerializeField] private InputHandler _IH;
+    [SerializeField] private bool _climb;
 
     private void Update()
     {
-        
+        if (_IH.Interact)
+        {
+            _climb = true;
+        }
+        if (_IH.CanleClimbing)
+        {
+            _climb = false;
+        }
+        if (_isFacingClimbableWall() && !_climb)
+        {
+            _interactA.SetBool("Play", true);
+        }
+        if (_climb || !_isFacingClimbableWall())
+        {
+            _interactA.SetBool("Play", false);
+        }
     }
 
     public bool _isFacingWall()

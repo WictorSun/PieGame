@@ -20,6 +20,7 @@ namespace StateMachine
 
         //Animation
         private Animator _playerAnim;
+        private Animator _jetPackAnim;
         int _moveAnimationID;
         int _moveWithBagID;
 
@@ -29,6 +30,7 @@ namespace StateMachine
         private Transform _thisObject;
 
         public GameObject _bike;
+        public GameObject _JetPack;
         //Vectors
 
         private Vector2 _inputVectorOnJetPack;
@@ -57,14 +59,14 @@ namespace StateMachine
             _playerAnim = parent.PlayerAnimator;
 
             _timeLeft = _timeChangeV;
-
+            _JetPack = parent.JetPack;
             _bike = parent.Bike;
             _playerRB = parent.PlayerRB;
 
             _orientation = parent.Orientation;
 
             _thisObject = parent.ThisObject;
-
+            _jetPackAnim = parent.JetPackAnimator;
             
             _rotationSpeed = parent.RotationSpeed;
             _playerAnim.SetBool("OnBike", false);
@@ -80,6 +82,8 @@ namespace StateMachine
         }
         public override void FixedUpdate()
         {
+            _JetPack.SetActive(true);
+            _jetPackAnim.SetBool("JetPackIn", true);
             _timeLeft -= Time.deltaTime;
             _playercollider = _parent.PlayerCollider;
             _playercollider.enabled = true;
@@ -165,6 +169,7 @@ namespace StateMachine
         {
             if (_changeVehicle && _timeLeft < 0f)
             {
+                
                 _runner.SetState(typeof(IdleState));
             }
             if (_GM._CamIsActive)

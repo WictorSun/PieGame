@@ -83,7 +83,7 @@ namespace StateMachine
             _jump = _parent._jumpingSC;
             _run = _parent.IH.Run;
             _AIG = _parent.AIG;
-            _interact = _parent.IH.Jump;
+            _interact = _parent.IH.Interact;
             _moveAnimationID = _parent.MoveAnimationID;
             _moveWithBagID = _parent.MoveWithBagID;
             _inputVectorOnGround = _parent.IH.InputVectorOnGround;

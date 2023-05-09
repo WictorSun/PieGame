@@ -1,0 +1,13 @@
+﻿title: StartConversation
+tags:
+---
+Angry Boss: Sculley you have to work.
+    -> Sculley: No!
+            Angry boss: Good it`s decided. you have to deliver a The Quadrilateral Quattro Formaggi to a  A.leaon. Thats all the way up on the top of  of mount Cube Colossus. Here you have your tips for the day use it to take the mountain lift on the north end of town… What are you waiting for go!
+            <<IntroDone>>
+            <<stop>>
+    -> Sculley: UUUHHH okay.
+            Angry boss: Good it`s decided. you have to deliver a The Quadrilateral Quattro Formaggi to a  A.leaon. Thats all the way up on the top of  of mount Cube Colossus. Here you have your tips for the day use it to take the mountain lift on the north end of town… What are you waiting for go!
+            <<IntroDone>>
+            <<stop>>
+===

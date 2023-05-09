@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunAccelRate: 25.24
   RunDecelRate: 14.17
-  _moveSpeed: 40
+  _moveSpeed: 53.9

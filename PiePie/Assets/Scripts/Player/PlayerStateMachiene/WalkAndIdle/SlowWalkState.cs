@@ -81,7 +81,7 @@ namespace StateMachine
             _moveAnimationID = _parent.MoveAnimationID;
             _moveWithBagID = _parent.MoveWithBagID;
             _inputVectorOnGround = _parent.IH.InputVectorOnGround;
-            _interact = _parent.IH.Jump;
+            _interact = _parent.IH.Interact;
             //getting reference to GameManager and InputVectorOnGround from stateRunner
             _GM = _parent.GM;
             _IFW = _parent._IFW;

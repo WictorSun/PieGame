@@ -27,8 +27,10 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private bool climbing;
     [SerializeField] private bool _cancleClimbing;
     [SerializeField] private bool _switchVehicle;
+    [SerializeField] private bool _interact;
 
     public bool Jump { get { return jump; } set { jump = value; } }
+    public bool Interact { get { return _interact; } set { _interact = value; } }
     public bool CanleClimbing { get { return _cancleClimbing; } set { _cancleClimbing = value; } }
     public bool SwitchVehicle1 { get { return _switchVehicle; } set { _switchVehicle = value; } }
     public bool Run { get { return run; } set { run = value; } }
@@ -88,6 +90,8 @@ public class InputHandler : MonoBehaviour
         PMBA.Interaction.SwitchVheicle.canceled += SwitchVehicle;
         PMBA.Interaction.Start.performed += SwitchVehicle;
         PMBA.Interaction.Start.canceled += SwitchVehicle;
+        PMBA.Interaction.Interact.performed += InteractNPC;
+        PMBA.Interaction.Interact.canceled += InteractNPC;
     }
 
     //Disable Actions
@@ -134,6 +138,13 @@ public class InputHandler : MonoBehaviour
         PMBA.Interaction.SwitchVheicle.canceled -= SwitchVehicle;
         PMBA.Interaction.Start.performed -= SwitchVehicle;
         PMBA.Interaction.Start.canceled -= SwitchVehicle;
+        PMBA.Interaction.Interact.performed -= InteractNPC;
+        PMBA.Interaction.Interact.canceled -= InteractNPC;
+    }
+
+    private void InteractNPC(InputAction.CallbackContext ctx)
+    {
+        _interact = ctx.ReadValueAsButton();
     }
 
     public void SwitchVehicle(InputAction.CallbackContext ctx)

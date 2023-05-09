@@ -1,0 +1,14 @@
+﻿title: Friend1SignReader
+tags:
+---
+Friend: Hey Sculley!
+    <<wait: 5>>
+Friend: Whats up? Has your shift ended?
+Sculley: I just have one more delivery of the day, then I'm outa here!
+Friend: Cool where ya going?
+Sculley: I'm going to the top of Mount Cube Colossus! Do you know how I get to the mountain lift?
+Friend: Yeah it's North of Vertex Park! If you don't find it you can always go up to a sign and I'm sure you'll find the way!
+Friend: Anyway, See ya Later!
+    <<StartWalking>>
+    <<stop>>
+===

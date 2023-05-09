@@ -12,14 +12,20 @@ public class InventoryManager : MonoBehaviour
     public GameManager _GM;
     public Animator _25DollarsAnim;
     public Animator _bikePrize;
+    public Animator _jetPackAnim;
+    public Animator _bagAnim;
 
     public static bool HasBike;
     public static bool HasBag;
+    public static bool HasJetPack;
 
     public bool buy;
     public static bool _start20;
     public static bool _boughtBike;
     public static bool _canBuyBike;
+    public static bool _canBuyJetPack;
+    public static bool _gotBag;
+
     private void Awake()
     {
         _money = 5;
@@ -44,7 +50,11 @@ public class InventoryManager : MonoBehaviour
         if (HasBike)
         {
             _GM.hasBike = true;
-
+            
+        }
+        if(HasJetPack)
+        {
+            _GM._hasJetPack = true;
         }
         if (HasBag)
         {
@@ -57,6 +67,14 @@ public class InventoryManager : MonoBehaviour
         if (_canBuyBike)
         {
             StartCoroutine(GetBike(.3f));
+        }
+        if (_canBuyJetPack)
+        {
+            StartCoroutine(GetJetPack(.3f));
+        }
+        if (_gotBag)
+        {
+            StartCoroutine(GotTheBag(0.3f));
         }
     }
     [YarnFunction("MyMoney")]
@@ -79,11 +97,20 @@ public class InventoryManager : MonoBehaviour
         HasBike = true;
         _canBuyBike = true;
     }
+     [YarnCommand("BuyTheJetPack")]
+    public static void TakingMoneyForrJetPack()
+    {
+        _money -= 5;
+        HasJetPack = true;
+        _canBuyJetPack = true;
+    }
     [YarnCommand("BuyTheBag")]
     public static void TakingMoneyForBag()
     {
         _money -= 3;
         HasBag = true;
+        _gotBag = true;
+
     }
     [YarnCommand("ShowBike")]
     public static void IGotTheBike()
@@ -111,5 +138,19 @@ public class InventoryManager : MonoBehaviour
         yield return new WaitForSeconds(sec);
         _bikePrize.SetBool("GotBike", false);
         _canBuyBike = false;
+    }
+    IEnumerator GetJetPack(float sec)
+    {
+        _jetPackAnim.SetBool("GotJetPack", true);
+        yield return new WaitForSeconds(sec);
+        _jetPackAnim.SetBool("GotJetPack", false);
+        _canBuyJetPack = false;
+    }
+    IEnumerator GotTheBag(float sec)
+    {
+        _bagAnim.SetBool("GotBag", true);
+        yield return new WaitForSeconds(sec);
+        _bagAnim.SetBool("GotBag", false);
+        _gotBag = false;
     }
 }

@@ -9,9 +9,16 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 053561912b1654d80a424bb0696a74ae, type: 3}
   sourceScripts:
+  - {fileID: 6391573757903218779, guid: ba2c280f6a5fc4c7cb1598eca547c858, type: 3}
   - {fileID: 6391573757903218779, guid: 7055c37d3655649d68404582223c0e5f, type: 3}
   - {fileID: 6391573757903218779, guid: c59537ec632d6418fbf06445bd4d2b87, type: 3}
   - {fileID: 6391573757903218779, guid: be40979900a044c40b47b642930aa578, type: 3}
+  - {fileID: 6391573757903218779, guid: dfdba6d2502cf487f9b0e291a187a62e, type: 3}
+  - {fileID: 6391573757903218779, guid: 203dbbf0a41be408094ae126af134121, type: 3}
+  - {fileID: 6391573757903218779, guid: c66a9aba308a64e0b87aeec78b76bde3, type: 3}
+  - {fileID: 6391573757903218779, guid: fb075cfecdd184baaa2a8cb4818592bb, type: 3}
+  - {fileID: 6391573757903218779, guid: 6d10f677398cf458aa7a58cbb3f95ca0, type: 3}
+  - {fileID: 6391573757903218779, guid: 309f779a8397f4d7786f79bd1304d270, type: 3}
   compileErrors: []
   serializedDeclarations: []
   defaultLanguage: en-US
@@ -20,6 +27,12 @@ ScriptedImporter:
   searchAllAssembliesForActions: 1
   assembliesToSearch: []
   ListOfFunctions:
+  - Name: GetTic
+    ReturnType: -> Boolean
+    Parameters: []
+  - Name: hasTicket
+    ReturnType: -> Boolean
+    Parameters: []
   - Name: GetHowMuchMoneyIHave
     ReturnType: -> Int32
     Parameters: []

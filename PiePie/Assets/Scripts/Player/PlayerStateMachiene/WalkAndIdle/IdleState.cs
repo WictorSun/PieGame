@@ -16,8 +16,10 @@ namespace StateMachine
         private CapsuleCollider _playercollider;
 
         public GameObject _bike;
+        private GameObject _JetPack;
 
         private Animator _playerAnim;
+        private Animator _jetPackAnim;
         int _moveAnimationID;
         int _moveWithBagID;
         private Vector2 _inputVectorOnGround;
@@ -40,13 +42,14 @@ namespace StateMachine
             base.Init(parent);
             _parent = parent;
             _playerRB = parent.PlayerRB;
-            _GM = _parent.GM;
+            //_GM = _parent.GM;
             _timeLeft = _timeChangeV;
             //_changeVehicle = false;
-
+            _jetPackAnim = parent.JetPackAnimator;
             _playerAnim = parent.PlayerAnimator;
             _playercollider = parent.PlayerCollider;
             _bike = parent.Bike;
+            _JetPack = parent.JetPack;
         }
 
         public override void CaptureInput()
@@ -61,10 +64,11 @@ namespace StateMachine
         {
             _AIG = _parent.AIG;
             _playerAnim.SetBool("OnBike", false);
+            _jetPackAnim.SetBool("JetPackIn", false);
             _jump = _parent._jumpingSC;
             _GM = _parent.GM;
             _IFW = _parent._IFW;
-            _interact = _parent.IH.Jump;
+            _interact = _parent.IH.Interact;
             _changeVehicle = _parent.IH.SwitchVehicle1;
             _inputVectorOnGround = _parent.IH.InputVectorOnGround;
             _moveAnimationID = _parent.MoveAnimationID;
@@ -73,6 +77,7 @@ namespace StateMachine
             _timeLeft -= Time.deltaTime;
 
             _bike.SetActive(false);
+            _JetPack.SetActive(false);
             _playercollider.enabled = true;
 
                 

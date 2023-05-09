@@ -1,0 +1,17 @@
+﻿title: BuyBag
+tags:
+---
+Bag SalesMan: Hey fella! Wanna be able to jump and other stuff? Only 5 dollars!
+    ->Buy Bag?
+         <<if MyMoney() > 5 >>
+            Bag SalesMan: Thank You!
+            <<BuyTheBag>>  
+            <<disable BagSales>>
+         <<else>>
+            Bag SalesMan: You dont have the money! Come back once you have 5 dollars...
+            <<stop>>
+         <<endif>>
+    ->Not Interested.
+        Bag SalesMan: Okay Come back later!
+            <<stop>>
+===
