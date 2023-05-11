@@ -27,16 +27,16 @@ MonoBehaviour:
     m_Value: 0
   nearFocusStart:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 3.02
   nearFocusEnd:
     m_OverrideState: 1
-    m_Value: 0.00001
+    m_Value: 277.76
   farFocusStart:
     m_OverrideState: 1
-    m_Value: 0.00002
+    m_Value: 392.85
   farFocusEnd:
     m_OverrideState: 1
-    m_Value: 0.00003
+    m_Value: 1633.5
   m_NearSampleCount:
     m_OverrideState: 1
     m_Value: 5
@@ -238,7 +238,7 @@ MonoBehaviour:
     m_Value: 1
   aerosolTint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0.90588236, b: 0, a: 1}
+    m_Value: {r: 1, g: 0.909804, b: 0, a: 1}
   aerosolMaximumAltitude:
     m_OverrideState: 1
     m_Value: 8018.39
@@ -283,10 +283,10 @@ MonoBehaviour:
     m_Value: 0
   horizonTint:
     m_OverrideState: 1
-    m_Value: {r: 0, g: 0.17926908, b: 1, a: 1}
+    m_Value: {r: 0, g: 0.18039227, b: 1, a: 1}
   zenithTint:
     m_OverrideState: 1
-    m_Value: {r: 0.16816092, g: 0.11764705, b: 1, a: 1}
+    m_Value: {r: 0.05777788, g: 0, b: 1, a: 1}
   horizonZenithShift:
     m_OverrideState: 1
     m_Value: 1
@@ -458,7 +458,7 @@ MonoBehaviour:
     m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   tint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0, b: 0.4496708, a: 1}
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
   maxFogDistance:
     m_OverrideState: 1
     m_Value: 891
@@ -485,7 +485,7 @@ MonoBehaviour:
     m_Value: 1
   albedo:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_Value: {r: 0.9716981, g: 0.9716981, b: 0.9716981, a: 1}
   globalLightProbeDimmer:
     m_OverrideState: 1
     m_Value: 1

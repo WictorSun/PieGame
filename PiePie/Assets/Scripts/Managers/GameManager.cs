@@ -102,20 +102,20 @@ public class GameManager : MonoBehaviour
 
 
             _CamIsActive = true;
-            _ViritualCamera.SetActive(true);
+           // _ViritualCamera.SetActive(true);
             _start = false;
             _Counter = 1f;
-            _phone.SetActive(true);
+           // _phone.SetActive(true);
 
 
         }
         else if (_CamIsActive && _start && _Counter <= 0f)
         {
             _CamIsActive = false;
-            _ViritualCamera.SetActive(false);
+            //_ViritualCamera.SetActive(false);
             _start = false;
             _Counter = 1f;
-            _phone.SetActive(false);
+            //_phone.SetActive(false);
             //StartCoroutine(GoBackFromPauseMenu(.2f));
 
         }

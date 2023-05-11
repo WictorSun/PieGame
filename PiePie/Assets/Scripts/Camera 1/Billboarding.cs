@@ -15,6 +15,7 @@ public class Billboarding : MonoBehaviour
     [SerializeField] private GameObject _signCamera;
     [SerializeField] private GameObject _playerCamera;
     [SerializeField] private GameManager _GM;
+    [SerializeField] private MenuManager _MM;
 
     // Start is called before the first frame update
     void Start()
@@ -25,35 +26,39 @@ public class Billboarding : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _cameraDir = _cam.transform.position;
-        _cameraDir.y = 0;
+        if (_MM._startgame)
+        {
+            _cameraDir = _cam.transform.position;
+            _cameraDir.y = 0;
 
-        transform.rotation = Quaternion.LookRotation(_cameraDir);
+            transform.rotation = Quaternion.LookRotation(_cameraDir);
 
-        if (_startShowingTrigger)
-        {
-            
-            _spriteAnim.SetBool("Play", true);
+            if (_startShowingTrigger)
+            {
+
+                _spriteAnim.SetBool("Play", true);
+            }
+            if (!_startShowingTrigger)
+            {
+
+                _spriteAnim.SetBool("Play", false);
+            }
+            if (_startShowingTrigger && _IH.Interact && !_GM._isInDia)
+            {
+                _GM._isInDia = true;
+                _playerCamera.SetActive(false);
+                _signCamera.SetActive(true);
+                _spriteAnim.SetBool("Play", false);
+            }
+            else if (_IH.CanleClimbing)
+            {
+                _GM._isInDia = false;
+                _spriteAnim.SetBool("Play", true);
+                _playerCamera.SetActive(true);
+                _signCamera.SetActive(false);
+            }
         }
-        if (!_startShowingTrigger)
-        {
-            
-            _spriteAnim.SetBool("Play", false);
-        }
-        if(_startShowingTrigger && _IH.Interact && !_GM._isInDia)
-        {
-            _GM._isInDia = true;
-            _playerCamera.SetActive(false);
-            _signCamera.SetActive(true);
-            _spriteAnim.SetBool("Play", false);
-        }
-        else if( _IH.CanleClimbing)
-        {
-            _GM._isInDia = false;
-            _spriteAnim.SetBool("Play", true);
-            _playerCamera.SetActive(true);
-            _signCamera.SetActive(false);
-        }
+        
     }
     private void OnTriggerEnter(Collider other)
     {
