@@ -22,5 +22,6 @@ TicketBool Booth Dude: You got the ticket?
 Sculley: Yes...
 Ticket Booth Dude: Noice.
 TicketBool Booth Dude: Jump onboard.
+    <<openTheStoneDoor>>
 <<endif>>
 ===
